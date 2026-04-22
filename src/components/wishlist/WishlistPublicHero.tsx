@@ -8,7 +8,7 @@ export function WishlistPublicHero() {
       <div className="pointer-events-none absolute -bottom-[60px] -left-[60px] opacity-20 rotate-[10deg]">
         <ButterflyTrail size={380} />
       </div>
-      <div className="pointer-events-none absolute -right-[80px] -top-[80px] opacity-15 rotate-[190deg]">
+      <div className="pointer-events-none absolute -right-[80px] -top-[80px] opacity-15 rotate-[10deg]">
         <ButterflyTrail size={340} />
       </div>
       <div className="pointer-events-none absolute left-[6%] top-[8%] animate-public-float-a opacity-80">

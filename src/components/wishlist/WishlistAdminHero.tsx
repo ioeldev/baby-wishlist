@@ -16,7 +16,7 @@ export function WishlistAdminHero({ kicker = "Espace gérant", title, descriptio
       <div className="pointer-events-none absolute -bottom-10 -left-10 opacity-15 rotate-[8deg]">
         <ButterflyTrail size={280} />
       </div>
-      <div className="pointer-events-none absolute -right-12 top-0 opacity-12 rotate-[185deg]">
+      <div className="pointer-events-none absolute -right-12 top-0 opacity-12 rotate-[8deg]">
         <ButterflyTrail size={240} />
       </div>
       <div className="pointer-events-none absolute right-[12%] top-[18%] animate-public-float-b opacity-50 max-sm:hidden">
