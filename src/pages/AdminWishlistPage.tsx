@@ -101,6 +101,8 @@ export function AdminWishlistPage() {
 
     async function handleSaveLink(linkPreview: LinkPreview, fallbackImageUrl?: string) {
         if (!linkItem) return;
+        // Note: fallbackImageUrl is handled by the upload endpoint and auto-saved to DB,
+        // so we only need to save the link here
         await addItemLink.mutateAsync({
             itemId: linkItem.id,
             input: {
@@ -111,12 +113,6 @@ export function AdminWishlistPage() {
                 price: linkPreview.price,
             },
         });
-        if (fallbackImageUrl) {
-            await updateItem.mutateAsync({
-                id: linkItem.id,
-                input: { fallback_image: fallbackImageUrl },
-            });
-        }
         setPreview(null);
         setLinkItem(null);
     }
