@@ -23,15 +23,32 @@ if (!MINIO_ACCESS_KEY || !MINIO_SECRET_KEY) {
   );
 }
 
+// Strip default ports so the signed host header matches what browsers send
+// e.g. https://host:443 → https://host (browsers omit :443 for HTTPS)
+function normalizeEndpoint(url: string): string {
+  try {
+    const u = new URL(url);
+    if (
+      (u.protocol === "https:" && u.port === "443") ||
+      (u.protocol === "http:" && u.port === "80")
+    ) {
+      u.port = "";
+    }
+    return u.toString().replace(/\/$/, "");
+  } catch {
+    return url.replace(/\/$/, "");
+  }
+}
+
+const endpoint = normalizeEndpoint(MINIO_PUBLIC_ENDPOINT);
+
 const s3 = new S3Client({
-  endpoint: MINIO_PUBLIC_ENDPOINT,
+  endpoint,
   accessKeyId: MINIO_ACCESS_KEY,
   secretAccessKey: MINIO_SECRET_KEY,
   bucket: MINIO_BUCKET,
   region: "us-east-1",
 });
-
-const publicBase = MINIO_PUBLIC_ENDPOINT.replace(/\/$/, "");
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -81,8 +98,8 @@ export async function uploadRoutes(app: FastifyInstance) {
         expiresIn: PRESIGN_EXPIRES_IN,
       });
 
-      // Permanent public URL — works once the bucket policy allows anonymous GET
-      const publicUrl = `${publicBase}/${MINIO_BUCKET}/${key}`;
+      // Permanent public URL — works once bucket policy allows anonymous GET
+      const publicUrl = `${endpoint}/${MINIO_BUCKET}/${key}`;
 
       return { uploadUrl, publicUrl };
     }
