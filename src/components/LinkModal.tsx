@@ -40,7 +40,7 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
   return (
     <Modal title="Ajouter un lien" maxWidth="xl" onClose={onClose}>
       <div className="grid gap-4">
-        <p className="text-[15px] text-[oklch(45%_0.10_295)]">{item.name}</p>
+        <p className="text-[15px] text-text-secondary">{item.name}</p>
         <form onSubmit={event => void handlePreview(event)} className="grid gap-2">
           <Field label="URL" className={WISHLIST_FORM_LABEL}>
             <div className="flex min-w-0 items-stretch gap-2">
@@ -61,16 +61,16 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
             {error}
           </Notice>
         ) : null}
-        {loading ? <p className="text-sm text-[oklch(50%_0.10_295)]">Chargement de la prévisualisation...</p> : null}
+        {loading ? <p className="text-sm text-text-secondary">Chargement de la prévisualisation...</p> : null}
         {preview ? (
-          <div className="rounded-[14px] border-[1.5px] border-[oklch(92%_0.07_295)] bg-[oklch(99.2%_0.015_295)] p-3 sm:p-4">
-            {preview.image ? <img src={preview.image} alt="" className="mb-3 aspect-video w-full rounded-[10px] object-cover" /> : null}
-            <p className="font-['Cormorant_Garamond'] text-lg font-medium text-[oklch(38%_0.18_295)]">{preview.title ?? preview.url}</p>
-            <p className="text-sm text-[oklch(50%_0.10_295)]">{preview.shop_name}</p>
-            {preview.price ? <p className="mt-2 text-sm font-semibold text-[oklch(50%_0.18_82)]">{preview.price}</p> : null}
+          <div className="rounded-xl border-[1.5px] border-border bg-bg-white p-3 sm:p-4">
+            {preview.image ? <img src={preview.image} alt="" className="mb-3 aspect-video w-full rounded-lg object-cover" /> : null}
+            <p className="font-heading text-lg font-medium text-text-primary">{preview.title ?? preview.url}</p>
+            <p className="text-sm text-text-secondary">{preview.shop_name}</p>
+            {preview.price ? <p className="mt-2 text-sm font-semibold text-price">{preview.price}</p> : null}
           </div>
         ) : null}
-        <div className="flex flex-wrap justify-end gap-2 border-t border-[oklch(92%_0.07_295)] pt-4">
+        <div className="flex flex-wrap justify-end gap-2 border-t border-border pt-4">
           <Button type="button" variant="wishlistSecondary" onClick={onClose}>
             Annuler
           </Button>

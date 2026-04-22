@@ -30,18 +30,18 @@ export function WishlistPublicHero() {
         <div className="mb-5 flex justify-center animate-public-float-a">
           <Butterfly index={0} size={100} />
         </div>
-        <p className="mb-2.5 font-['Cormorant_Garamond'] text-[15px] font-normal uppercase italic tracking-[0.14em] text-[oklch(68%_0.16_295)]">
+        <p className="mb-2.5 font-heading text-[15px] font-normal uppercase italic tracking-[0.14em] text-primary">
           Baby on the way
         </p>
-        <h1 className="mb-4 font-['Cormorant_Garamond'] text-[clamp(40px,7vw,70px)] font-light leading-[1.05] text-[oklch(38%_0.18_295)]">
+        <h1 className="mb-4 font-heading text-[clamp(40px,7vw,70px)] font-light leading-[1.05] text-text-primary">
           Notre Liste de Naissance
         </h1>
-        <p className="mx-auto max-w-[460px] text-[15px] leading-relaxed text-[oklch(45%_0.10_295)]">
+        <p className="mx-auto max-w-[460px] text-[15px] leading-relaxed text-text-secondary">
           Choisissez un cadeau à offrir à notre petit trésor qui arrive bientôt.
         </p>
-        <div className="mt-5 flex justify-center gap-2.5 text-[oklch(74%_0.13_82)]">
+        <div className="mt-5 flex justify-center gap-2.5 text-price-light">
           <Sparkle size={9} />
-          <Sparkle size={13} className="text-[oklch(68%_0.16_295)]" />
+          <Sparkle size={13} className="text-primary" />
           <Sparkle size={9} />
         </div>
       </div>

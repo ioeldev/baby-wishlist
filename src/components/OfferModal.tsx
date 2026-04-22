@@ -49,7 +49,7 @@ export function OfferModal({ item, onClose, onReserve }: Props) {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-[420px] rounded-[28px] border-[1.5px] border-[oklch(92%_0.07_295)] bg-white px-8 py-9 shadow-[0_24px_80px_oklch(52%_0.20_295_/_0.28)]"
+        className="relative w-full max-w-[420px] rounded-3xl border-[1.5px] border-border bg-white px-8 py-9 shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
         <Butterfly index={0} size={72} className="absolute -top-7 right-4 animate-public-float-a" />
@@ -58,32 +58,32 @@ export function OfferModal({ item, onClose, onReserve }: Props) {
         {done ? (
           <div className="py-5 text-center animate-public-fade-up">
             <Butterfly index={0} size={72} className="mx-auto mb-3.5 animate-public-float-a" />
-            <h3 className="mb-2 font-['Cormorant_Garamond'] text-3xl font-semibold text-[oklch(38%_0.18_295)]">Merci !</h3>
-            <p className="text-sm text-[oklch(45%_0.10_295)]">Votre cadeau est réservé avec amour.</p>
+            <h3 className="mb-2 font-heading text-3xl font-semibold text-text-primary">Merci !</h3>
+            <p className="text-sm text-text-secondary">Votre cadeau est réservé avec amour.</p>
           </div>
         ) : (
           <>
-            <h3 className="mb-1 font-['Cormorant_Garamond'] text-[26px] font-semibold leading-tight text-[oklch(38%_0.18_295)]">Offrir ce cadeau</h3>
-            <p className="mb-6 text-sm italic text-[oklch(62%_0.08_295)]">{item.name}</p>
+            <h3 className="mb-1 font-heading text-[26px] font-semibold leading-tight text-text-primary">Offrir ce cadeau</h3>
+            <p className="mb-6 text-sm italic text-text-tertiary">{item.name}</p>
             <form onSubmit={handleSubmit} className="grid gap-3.5">
               <label>
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-[oklch(45%_0.10_295)]">Prénom</span>
+                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-text-secondary">Prénom</span>
                 <input
                   name="first_name"
                   autoComplete="given-name"
                   required
                   placeholder="Votre prénom"
-                  className="w-full rounded-[14px] border-[1.5px] border-[oklch(80%_0.12_295)] bg-[oklch(95%_0.03_295)] px-4 py-3 text-[15px] text-[oklch(22%_0.06_295)] outline-none transition focus:border-[oklch(68%_0.16_295)]"
+                  className="w-full rounded-xl border-[1.5px] border-border-medium bg-[oklch(95%_0.03_295)] px-4 py-3 text-[15px] text-text-dark outline-none transition focus:border-primary"
                 />
               </label>
               <label>
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-[oklch(45%_0.10_295)]">Nom</span>
+                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-text-secondary">Nom</span>
                 <input
                   name="last_name"
                   autoComplete="family-name"
                   required
                   placeholder="Votre nom"
-                  className="w-full rounded-[14px] border-[1.5px] border-[oklch(80%_0.12_295)] bg-[oklch(95%_0.03_295)] px-4 py-3 text-[15px] text-[oklch(22%_0.06_295)] outline-none transition focus:border-[oklch(68%_0.16_295)]"
+                  className="w-full rounded-xl border-[1.5px] border-border-medium bg-[oklch(95%_0.03_295)] px-4 py-3 text-[15px] text-text-dark outline-none transition focus:border-primary"
                 />
               </label>
               {error ? <Notice tone="error">{error}</Notice> : null}
@@ -91,14 +91,14 @@ export function OfferModal({ item, onClose, onReserve }: Props) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 rounded-[14px] border-[1.5px] border-[oklch(80%_0.12_295)] bg-white p-3 text-sm font-semibold text-[oklch(45%_0.10_295)]"
+                  className="flex-1 rounded-xl border-[1.5px] border-border-medium bg-white p-3 text-sm font-semibold text-text-secondary"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
                   disabled={busy}
-                  className="flex-[2] rounded-[14px] border-0 bg-gradient-to-br from-[oklch(68%_0.16_295)] to-[oklch(52%_0.20_295)] p-3 text-sm font-bold text-white shadow-[0_4px_16px_oklch(52%_0.20_295_/_0.35)] disabled:opacity-70"
+                  className="flex-[2] rounded-xl border-0 bg-gradient-to-br from-primary to-primary-dark p-3 text-sm font-bold text-white shadow-md disabled:opacity-70"
                 >
                   {busy ? "Réservation..." : "Je l'offre !"}
                 </button>

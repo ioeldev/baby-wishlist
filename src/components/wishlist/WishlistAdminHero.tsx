@@ -11,7 +11,7 @@ type Props = {
 
 export function WishlistAdminHero({ kicker = "Espace gérant", title, description, actions }: Props) {
   return (
-    <header className="relative z-[1] overflow-hidden border-b border-[oklch(92%_0.07_295)] px-6 py-12 sm:py-14">
+    <header className="relative z-[1] overflow-hidden border-b border-border px-6 py-12 sm:py-14">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,oklch(88%_0.10_295_/_0.45),transparent)]" />
       <div className="pointer-events-none absolute -bottom-10 -left-10 opacity-15 rotate-[8deg]">
         <ButterflyTrail size={280} />
@@ -27,16 +27,16 @@ export function WishlistAdminHero({ kicker = "Espace gérant", title, descriptio
           <div className="mb-4 flex justify-center lg:justify-start">
             <Butterfly index={0} size={72} className="animate-public-float-a" />
           </div>
-          <p className="mb-2 font-['Cormorant_Garamond'] text-[15px] font-normal uppercase italic tracking-[0.14em] text-[oklch(68%_0.16_295)]">
+          <p className="mb-2 font-heading text-[15px] font-normal uppercase italic tracking-[0.14em] text-primary">
             {kicker}
           </p>
-          <h1 className="mb-3 font-['Cormorant_Garamond'] text-[clamp(32px,5vw,52px)] font-light leading-[1.08] text-[oklch(38%_0.18_295)]">
+          <h1 className="mb-3 font-heading text-[clamp(32px,5vw,52px)] font-light leading-[1.08] text-text-primary">
             {title}
           </h1>
-          <p className="text-[15px] leading-relaxed text-[oklch(45%_0.10_295)]">{description}</p>
-          <div className="mt-4 flex justify-center gap-2.5 text-[oklch(74%_0.13_82)] lg:justify-start">
+          <p className="text-[15px] leading-relaxed text-text-secondary">{description}</p>
+          <div className="mt-4 flex justify-center gap-2.5 text-price-light lg:justify-start">
             <Sparkle size={9} />
-            <Sparkle size={11} className="text-[oklch(68%_0.16_295)]" />
+            <Sparkle size={11} className="text-primary" />
             <Sparkle size={9} />
           </div>
         </div>
