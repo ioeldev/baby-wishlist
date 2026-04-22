@@ -1,28 +1,36 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { s3 } from "bun";
+import { S3Client } from "bun";
 import { requireAdmin } from "../auth";
 import { db } from "../db";
 
 const {
-  S3_ENDPOINT,
-  S3_ACCESS_KEY_ID,
-  S3_SECRET_ACCESS_KEY,
-  S3_BUCKET,
-  S3_PUBLIC_BASE_URL,
+  MINIO_PUBLIC_ENDPOINT,
+  MINIO_ROOT_USER,
+  MINIO_ROOT_PASSWORD,
+  MINIO_BUCKET,
 } = process.env;
 
-if (!S3_ENDPOINT || !S3_BUCKET) {
+if (!MINIO_PUBLIC_ENDPOINT || !MINIO_BUCKET) {
   throw new Error(
-    "S3_ENDPOINT and S3_BUCKET environment variables are required"
+    "MINIO_PUBLIC_ENDPOINT and MINIO_BUCKET environment variables are required"
   );
 }
 
-if (!S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY) {
+if (!MINIO_ROOT_USER || !MINIO_ROOT_PASSWORD) {
   throw new Error(
-    "S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY environment variables are required"
+    "MINIO_ROOT_USER and MINIO_ROOT_PASSWORD environment variables are required"
   );
 }
+
+const s3 = new S3Client({
+  endpoint: MINIO_PUBLIC_ENDPOINT,
+  accessKeyId: MINIO_ROOT_USER,
+  secretAccessKey: MINIO_ROOT_PASSWORD,
+  bucket: MINIO_BUCKET,
+});
+
+const publicBase = MINIO_PUBLIC_ENDPOINT.replace(/\/$/, "");
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -73,8 +81,8 @@ export async function uploadRoutes(app: FastifyInstance) {
         expiresIn: PRESIGN_EXPIRES_IN,
       });
 
-      const publicBaseUrl = (S3_PUBLIC_BASE_URL || S3_ENDPOINT!).replace(/\/$/, "");
-      const publicUrl = `${publicBaseUrl}/${S3_BUCKET}/${key}`;
+      // Permanent public URL — works once the bucket policy allows anonymous GET
+      const publicUrl = `${publicBase}/${MINIO_BUCKET}/${key}`;
 
       return { uploadUrl, publicUrl };
     }
