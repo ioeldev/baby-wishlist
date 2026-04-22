@@ -117,5 +117,14 @@ const seed = db.transaction(() => {
   });
 });
 
-seed();
-console.log(`Seeded ${data.length} categories and ${data.reduce((sum, category) => sum + category.items.length, 0)} items.`);
+export function seedIfEmpty() {
+  const count = db.query("SELECT COUNT(*) as n FROM categories").get() as { n: number };
+  if (count.n > 0) return;
+  seed();
+  console.log(`Seeded ${data.length} categories and ${data.reduce((sum, c) => sum + c.items.length, 0)} items.`);
+}
+
+if (import.meta.main) {
+  seed();
+  console.log(`Seeded ${data.length} categories and ${data.reduce((sum, category) => sum + category.items.length, 0)} items.`);
+}

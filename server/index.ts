@@ -4,10 +4,12 @@ import dotenv from "dotenv";
 import path from "node:path";
 dotenv.config();
 import { migrate } from "./db";
+import { seedIfEmpty } from "./seed";
 import { categoryRoutes } from "./routes/categories";
 import { itemRoutes } from "./routes/items";
 import { previewRoutes } from "./routes/preview";
 migrate();
+seedIfEmpty();
 
 const api = fastify({ logger: process.env.NODE_ENV === "production" });
 const port = Number(process.env.PORT ?? 3001);
