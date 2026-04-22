@@ -183,13 +183,14 @@ export function ItemCard({
 
 function ItemImage({ item }: { item: Item }) {
     const [failed, setFailed] = useState(false);
-    const image = item.links.find((link) => link.image)?.image;
+    const scrapedImage = item.links.find((link) => link.image)?.image;
+    const displayImage = scrapedImage && !failed ? scrapedImage : item.fallback_image;
 
-    if (image && !failed) {
+    if (displayImage) {
         return (
             <div className="relative h-[200px] overflow-hidden rounded-t-[18px] bg-[oklch(97%_0.02_295)]">
                 <img
-                    src={image}
+                    src={displayImage}
                     alt={item.name}
                     onError={() => setFailed(true)}
                     className="h-full w-full object-contain p-3 transition duration-300"

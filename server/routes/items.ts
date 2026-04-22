@@ -144,6 +144,25 @@ export async function itemRoutes(app: FastifyInstance) {
     return normalizeItem(updated, true);
   });
 
+  app.patch("/items/:id/fallback-image", async (request, reply) => {
+    if (!requireAdmin(request, reply)) return;
+    const params = z.object({ id: z.coerce.number().int().positive() }).parse(request.params);
+    const body = z.object({ fallback_image: z.string().url().or(z.null()) }).parse(request.body);
+
+    const updated = db.query(`
+      UPDATE items
+      SET fallback_image = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+      RETURNING *
+    `).get(body.fallback_image, params.id) as Record<string, unknown> | null;
+
+    if (!updated) {
+      return reply.code(404).send({ message: "Item not found" });
+    }
+
+    return normalizeItem(updated, true);
+  });
+
   app.post("/items/:id/reserve", async (request, reply) => {
     const params = z.object({ id: z.coerce.number().int().positive() }).parse(request.params);
     const body = reserveInput.parse(request.body);

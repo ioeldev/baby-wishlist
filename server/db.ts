@@ -28,6 +28,7 @@ export function migrate() {
       reserved_at TEXT,
       assigned_to TEXT,
       price_estimate REAL,
+      fallback_image TEXT,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
@@ -62,6 +63,10 @@ export function migrate() {
 
   if (!existing.has("reserved_at")) {
     db.exec("ALTER TABLE items ADD COLUMN reserved_at TEXT");
+  }
+
+  if (!existing.has("fallback_image")) {
+    db.exec("ALTER TABLE items ADD COLUMN fallback_image TEXT");
   }
 }
 

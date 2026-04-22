@@ -99,7 +99,7 @@ export function AdminWishlistPage() {
         }
     }
 
-    async function handleSaveLink(linkPreview: LinkPreview) {
+    async function handleSaveLink(linkPreview: LinkPreview, fallbackImageUrl?: string) {
         if (!linkItem) return;
         await addItemLink.mutateAsync({
             itemId: linkItem.id,
@@ -111,6 +111,12 @@ export function AdminWishlistPage() {
                 price: linkPreview.price,
             },
         });
+        if (fallbackImageUrl) {
+            await updateItem.mutateAsync({
+                id: linkItem.id,
+                input: { fallback_image: fallbackImageUrl },
+            });
+        }
         setPreview(null);
         setLinkItem(null);
     }

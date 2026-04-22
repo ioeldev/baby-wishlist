@@ -21,6 +21,7 @@ export type Item = {
   reserved_at: string | null;
   assigned_to: string | null;
   price_estimate: number | null;
+  fallback_image: string | null;
   created_at: string;
   updated_at: string;
   links: ItemLink[];
@@ -60,6 +61,7 @@ export type NewItemInput = {
   note?: string | null;
   assigned_to?: string | null;
   price_estimate?: number | null;
+  fallback_image?: string | null;
 };
 
 export type UpdateItemInput = Partial<NewItemInput>;

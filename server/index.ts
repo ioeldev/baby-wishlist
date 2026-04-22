@@ -1,5 +1,6 @@
 import { serve } from "bun";
 import fastify from "fastify";
+import multipart from "@fastify/multipart";
 import dotenv from "dotenv";
 import path from "node:path";
 dotenv.config();
@@ -8,6 +9,7 @@ import { seedIfEmpty } from "./seed";
 import { categoryRoutes } from "./routes/categories";
 import { itemRoutes } from "./routes/items";
 import { previewRoutes } from "./routes/preview";
+import { uploadRoutes } from "./routes/upload";
 migrate();
 seedIfEmpty();
 
@@ -17,11 +19,14 @@ const production = process.env.NODE_ENV === "production";
 const distDir = path.join(process.cwd(), "dist");
 const devIndex = production ? null : (await import("../src/index.html")).default;
 
+await api.register(multipart);
+
 await api.register(
     async (app) => {
         await app.register(categoryRoutes);
         await app.register(itemRoutes);
         await app.register(previewRoutes);
+        await app.register(uploadRoutes);
     },
     { prefix: "/api" }
 );
