@@ -1,16 +1,9 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { z } from "zod";
 import type { CategoryWithItems, Item, NewItemInput } from "../types";
+import { useTranslation } from "../i18n";
 import { WISHLIST_FORM_FIELD, WISHLIST_FORM_LABEL } from "./wishlist";
 import { Button, Field, Modal, Notice, SelectInput, TextArea, TextInput } from "./ui";
-
-const schema = z.object({
-  category_id: z.coerce.number().int().positive(),
-  name: z.string().trim().min(1, "Le nom est obligatoire"),
-  note: z.string().trim().optional(),
-  assigned_to: z.string().trim().optional(),
-  price_estimate: z.union([z.literal(""), z.coerce.number().nonnegative()]).optional(),
-});
 
 type Props = {
   open: boolean;
@@ -21,8 +14,17 @@ type Props = {
 };
 
 export function AddItemModal({ open, categories, item, onClose, onSubmit }: Props) {
+  const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const schema = z.object({
+    category_id: z.coerce.number().int().positive(),
+    name: z.string().trim().min(1, t("addItemModal.error_name_required")),
+    note: z.string().trim().optional(),
+    assigned_to: z.string().trim().optional(),
+    price_estimate: z.union([z.literal(""), z.coerce.number().nonnegative()]).optional(),
+  });
 
   useEffect(() => {
     if (open) setError(null);
@@ -43,7 +45,7 @@ export function AddItemModal({ open, categories, item, onClose, onSubmit }: Prop
     });
 
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? "Formulaire invalide");
+      setError(parsed.error.issues[0]?.message ?? t("addItemModal.error_invalid_form"));
       return;
     }
 
@@ -59,23 +61,23 @@ export function AddItemModal({ open, categories, item, onClose, onSubmit }: Prop
       });
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Impossible d'enregistrer");
+      setError(err instanceof Error ? err.message : t("addItemModal.error_save"));
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <Modal title={item ? "Modifier l'article" : "Ajouter un article"} maxWidth="xl" onClose={onClose}>
+    <Modal title={item ? t("addItemModal.title_edit") : t("addItemModal.title_add")} maxWidth="xl" onClose={onClose}>
       <form onSubmit={handleSubmit} className="grid gap-4">
-        <Field label="Nom" className={WISHLIST_FORM_LABEL}>
+        <Field label={t("addItemModal.name_label")} className={WISHLIST_FORM_LABEL}>
           <TextInput name="name" defaultValue={item?.name ?? ""} className={WISHLIST_FORM_FIELD} required />
         </Field>
-        <Field label="Note" className={WISHLIST_FORM_LABEL}>
+        <Field label={t("addItemModal.note_label")} className={WISHLIST_FORM_LABEL}>
           <TextArea name="note" defaultValue={item?.note ?? ""} className={WISHLIST_FORM_FIELD} />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Catégorie" className={WISHLIST_FORM_LABEL}>
+          <Field label={t("addItemModal.category_label")} className={WISHLIST_FORM_LABEL}>
             <SelectInput name="category_id" defaultValue={item?.category_id ?? categories[0]?.id} className={WISHLIST_FORM_FIELD}>
               {categories.map(category => (
                 <option key={category.id} value={category.id}>
@@ -84,12 +86,12 @@ export function AddItemModal({ open, categories, item, onClose, onSubmit }: Prop
               ))}
             </SelectInput>
           </Field>
-          <Field label="Assigné à" className={WISHLIST_FORM_LABEL}>
+          <Field label={t("addItemModal.assigned_to_label")} className={WISHLIST_FORM_LABEL}>
             <TextInput name="assigned_to" defaultValue={item?.assigned_to ?? ""} className={WISHLIST_FORM_FIELD} />
           </Field>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Prix estimé" className={WISHLIST_FORM_LABEL}>
+          <Field label={t("addItemModal.price_label")} className={WISHLIST_FORM_LABEL}>
             <TextInput
               name="price_estimate"
               type="number"
@@ -107,10 +109,10 @@ export function AddItemModal({ open, categories, item, onClose, onSubmit }: Prop
         ) : null}
         <div className="flex flex-wrap justify-end gap-2 border-t border-[oklch(92%_0.07_295)] pt-4">
           <Button type="button" variant="wishlistSecondary" onClick={onClose}>
-            Annuler
+            {t("common.cancel")}
           </Button>
           <Button type="submit" variant="wishlistPrimary" disabled={busy}>
-            {busy ? "Enregistrement..." : "Enregistrer"}
+            {busy ? t("addItemModal.save_busy") : t("addItemModal.save_idle")}
           </Button>
         </div>
       </form>

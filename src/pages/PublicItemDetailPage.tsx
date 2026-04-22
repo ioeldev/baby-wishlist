@@ -8,9 +8,11 @@ import { WishlistPageFooter, WishlistPageShell } from "../components/wishlist";
 import { Notice } from "../components/ui";
 import { findItemInWishlist, getPrimaryItemImageUrl } from "../lib/itemHelpers";
 import { useReserveItem, useWishlist } from "../hooks/useWishlist";
+import { useTranslation } from "../i18n";
 import type { Item, ItemLink, ReserveItemInput } from "../types";
 
 function DetailHeroImage({ item, alt }: { item: Item; alt: string }) {
+    const { t } = useTranslation();
     const [failed, setFailed] = useState(false);
     const url = getPrimaryItemImageUrl(item);
 
@@ -32,13 +34,14 @@ function DetailHeroImage({ item, alt }: { item: Item; alt: string }) {
         <div className="img-placeholder relative flex aspect-[4/3] max-h-[min(52vh,520px)] w-full items-center justify-center overflow-hidden rounded-[24px] shadow-inner">
             <Butterfly index={item.id} size={120} className="absolute opacity-20" />
             <span className="relative font-mono text-xs tracking-[0.08em] text-[oklch(68%_0.16_295)] opacity-80">
-                photo produit
+                {t("itemDetail.product_photo")}
             </span>
         </div>
     );
 }
 
 function ShopLinkCard({ link, index }: { link: ItemLink; index: number }) {
+    const { t } = useTranslation();
     const delay = `${100 + index * 70}ms`;
     return (
         <a
@@ -61,12 +64,12 @@ function ShopLinkCard({ link, index }: { link: ItemLink; index: number }) {
             </div>
             <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
                 <p className="font-['Cormorant_Garamond'] text-lg font-semibold leading-snug text-[oklch(38%_0.18_295)] group-hover:text-[oklch(45%_0.16_295)]">
-                    {link.title ?? link.shop_name ?? "Voir l’offre"}
+                    {link.title ?? link.shop_name ?? t("itemDetail.see_offer")}
                 </p>
                 {link.shop_name ? <p className="text-sm text-[oklch(52%_0.10_295)]">{link.shop_name}</p> : null}
                 {link.price ? <p className="mt-0.5 text-sm font-bold text-[oklch(52%_0.16_82)]">{link.price}</p> : null}
                 <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-[oklch(58%_0.14_295)]">
-                    Ouvrir le lien
+                    {t("itemDetail.open_link")}
                     <ExternalLink className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" aria-hidden="true" />
                 </span>
             </div>
@@ -75,6 +78,7 @@ function ShopLinkCard({ link, index }: { link: ItemLink; index: number }) {
 }
 
 export function PublicItemDetailPage() {
+    const { t } = useTranslation();
     const { id: idParam } = useParams();
     const wishlist = useWishlist(false, true);
     const reserveItem = useReserveItem();
@@ -102,7 +106,7 @@ export function PublicItemDetailPage() {
         return (
             <WishlistPageShell>
                 <div className="flex min-h-[50vh] items-center justify-center px-6">
-                    <p className="text-[oklch(45%_0.10_295)]">Chargement...</p>
+                    <p className="text-[oklch(45%_0.10_295)]">{t("common.loading")}</p>
                 </div>
             </WishlistPageShell>
         );
@@ -119,7 +123,7 @@ export function PublicItemDetailPage() {
                         to="/"
                         className="mt-4 inline-block text-sm font-semibold text-[oklch(55%_0.16_295)] underline-offset-2 hover:underline"
                     >
-                        Retour à la liste
+                        {t("itemDetail.back_to_list")}
                     </Link>
                 </div>
             </WishlistPageShell>
@@ -134,17 +138,17 @@ export function PublicItemDetailPage() {
                         <Butterfly index={0} size={64} className="opacity-40" />
                     </div>
                     <h1 className="font-['Cormorant_Garamond'] text-2xl text-[oklch(45%_0.12_295)]">
-                        Article introuvable
+                        {t("itemDetail.not_found_title")}
                     </h1>
                     <p className="mt-2 text-sm text-[oklch(50%_0.10_295)]">
-                        Ce cadeau n’existe pas ou n’est plus sur la liste.
+                        {t("itemDetail.not_found_description")}
                     </p>
                     <Link
                         to="/"
                         className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-[oklch(68%_0.16_295)] to-[oklch(52%_0.20_295)] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_16px_oklch(52%_0.20_295_/_0.3)]"
                     >
                         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                        Retour à la liste
+                        {t("itemDetail.back_to_list")}
                     </Link>
                 </div>
             </WishlistPageShell>
@@ -160,13 +164,13 @@ export function PublicItemDetailPage() {
 
             <div className="relative z-[1] mx-auto w-full max-w-[800px] px-4 pb-28 sm:px-6 sm:pb-20">
                 <header className="animate-detail-in">
-                    <nav className="flex flex-wrap items-center gap-2 py-4 text-sm" aria-label="Fil d’Ariane">
+                    <nav className="flex flex-wrap items-center gap-2 py-4 text-sm" aria-label={t("itemDetail.breadcrumb_label")}>
                         <Link
                             to="/"
                             className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-full border-[1.5px] border-[oklch(88%_0.10_295)] bg-white/80 px-3.5 text-[oklch(45%_0.12_295)] shadow-sm backdrop-blur transition hover:border-[oklch(80%_0.12_295)] hover:text-[oklch(32%_0.18_295)]"
                         >
                             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                            <span className="max-sm:sr-only">Liste</span>
+                            <span className="max-sm:sr-only">{t("itemDetail.nav_list")}</span>
                         </Link>
                         <span className="text-[oklch(70%_0.08_295)]" aria-hidden="true">
                             /
@@ -181,7 +185,7 @@ export function PublicItemDetailPage() {
                             /
                         </span>
                         <span className="min-w-0 truncate text-[oklch(40%_0.12_295)]" title={item.name}>
-                            Fiche
+                            {t("itemDetail.nav_item")}
                         </span>
                     </nav>
                 </header>
@@ -198,7 +202,7 @@ export function PublicItemDetailPage() {
                             </h1>
                             {reserved ? (
                                 <span className="shrink-0 rounded-full bg-reserved px-3.5 py-1.5 text-xs font-bold tracking-[0.04em] text-reserved-text">
-                                    Réservé
+                                    {t("itemDetail.reserved_badge")}
                                 </span>
                             ) : null}
                             {!reserved && item.assigned_to ? (
@@ -232,11 +236,10 @@ export function PublicItemDetailPage() {
                                 className="mb-4 flex items-center gap-2 font-['Cormorant_Garamond'] text-[22px] font-medium text-[oklch(38%_0.18_295)]"
                             >
                                 <Sparkles className="h-5 w-5 text-[oklch(70%_0.14_82)]" aria-hidden="true" />
-                                Où l’acheter
+                                {t("itemDetail.where_to_buy")}
                             </h2>
                             <p className="mb-4 text-sm text-[oklch(50%_0.10_295)]">
-                                Liens vérifiés par les parents — ouvrez-les pour voir le détail, la taille, les
-                                couleurs, etc.
+                                {t("itemDetail.verified_links")}
                             </p>
                             <ul className="grid gap-3">
                                 {item.links.map((link, i) => (
@@ -251,7 +254,7 @@ export function PublicItemDetailPage() {
                             style={{ animationDelay: "200ms" }}
                             className="mt-8 text-sm italic text-[oklch(55%_0.10_295)] animate-detail-in"
                         >
-                            Aucun lien boutique pour l’instant — revenez plus tard.
+                            {t("itemDetail.no_links")}
                         </p>
                     )}
 
@@ -263,7 +266,7 @@ export function PublicItemDetailPage() {
                                 className="inline-flex w-full max-w-md items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[oklch(68%_0.16_295)] to-[oklch(52%_0.20_295)] py-4 text-base font-bold text-white shadow-[0_6px_24px_oklch(52%_0.20_295_/_0.35)] transition hover:opacity-[0.97] active:scale-[0.99] animate-detail-in"
                             >
                                 <Gift className="h-5 w-5" aria-hidden="true" />
-                                Offrir ce cadeau
+                                {t("itemDetail.offer_button")}
                             </button>
                         </div>
                     ) : null}
@@ -272,7 +275,7 @@ export function PublicItemDetailPage() {
                             style={{ animationDelay: "240ms" }}
                             className="mt-8 text-center text-sm text-[oklch(45%_0.12_295)] animate-detail-in"
                         >
-                            Ce cadeau a déjà été choisi. Merci de votre générosité !
+                            {t("itemDetail.already_reserved")}
                         </p>
                     ) : null}
                 </article>
@@ -287,13 +290,13 @@ export function PublicItemDetailPage() {
                             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[oklch(68%_0.16_295)] to-[oklch(52%_0.20_295)] py-4 text-base font-bold text-white shadow-[0_8px_32px_oklch(52%_0.20_295_/_0.45)]"
                         >
                             <Gift className="h-5 w-5" aria-hidden="true" />
-                            Offrir ce cadeau
+                            {t("itemDetail.offer_button")}
                         </button>
                     </div>
                 </div>
             ) : null}
 
-            <WishlistPageFooter message="Merci pour votre amour et vos cadeaux" />
+            <WishlistPageFooter message={t("itemDetail.footer_message")} />
 
             <OfferModal item={offerItem} onClose={() => setOfferItem(null)} onReserve={handleReserve} />
         </WishlistPageShell>

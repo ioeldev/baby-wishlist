@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { CategoryWithItems, Item } from "../types";
+import { useTranslation } from "../i18n";
 import { Butterfly } from "./Butterflies";
 import { ItemCard } from "./ItemCard";
 
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export function CategorySection(props: Props) {
+  const { t } = useTranslation();
   const { category, admin = false } = props;
   const [open, setOpen] = useState(true);
   const total = category.items.length;
@@ -60,7 +62,7 @@ export function CategorySection(props: Props) {
               {category.name}
             </h2>
             <p className="mt-0.5 text-center text-xs font-semibold text-text-tertiary sm:text-left">
-              {reserved}/{total} réservés · {percent}%
+              {t("categorySection.reserved_percent", { reserved, total, percent })}
             </p>
           </div>
           <ChevronDown className={`h-5 w-5 shrink-0 text-text-tertiary transition ${open ? "rotate-180" : ""}`} aria-hidden="true" />

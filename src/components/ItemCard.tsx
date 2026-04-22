@@ -2,6 +2,7 @@ import { ExternalLink, Gift, LinkIcon, Pencil, RotateCcw, Trash2, X } from "luci
 import { useState } from "react";
 import { Link } from "react-router";
 import type { Item } from "../types";
+import { useTranslation } from "../i18n";
 import { Butterfly } from "./Butterflies";
 import { Button } from "./ui";
 
@@ -32,6 +33,20 @@ export function ItemCard({
 
     const reserved = item.is_reserved;
 
+    return <AdminItemCard item={item} reserved={reserved} onAddLink={onAddLink} onEdit={onEdit} onDelete={onDelete} onDeleteLink={onDeleteLink} onClearReservation={onClearReservation} />;
+}
+
+function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLink, onClearReservation }: {
+    item: Item;
+    reserved: boolean;
+    onAddLink?: (item: Item) => void;
+    onEdit?: (item: Item) => void;
+    onDelete?: (item: Item) => void;
+    onDeleteLink?: (id: number) => void;
+    onClearReservation?: (item: Item) => void;
+}) {
+    const { t } = useTranslation();
+
     return (
         <article
             className={`group flex h-full min-w-0 flex-col overflow-hidden rounded-[20px] border-[1.5px] shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-card ${
@@ -50,7 +65,7 @@ export function ItemCard({
                     </h3>
                     {reserved ? (
                         <span className="shrink-0 rounded-full bg-reserved px-2.5 py-1 text-[10px] font-bold tracking-[0.05em] text-reserved-text">
-                            Réservé
+                            {t("itemCard.reserved_badge")}
                         </span>
                     ) : null}
                 </div>
@@ -109,7 +124,7 @@ export function ItemCard({
                                         target="_blank"
                                         rel="noreferrer"
                                         className="text-text-tertiary hover:text-text-primary"
-                                        aria-label="Ouvrir le lien"
+                                        aria-label={t("itemCard.open_link_label")}
                                     >
                                         <ExternalLink className="h-4 w-4" />
                                     </a>
@@ -119,7 +134,7 @@ export function ItemCard({
                                             size="icon"
                                             onClick={() => onDeleteLink(link.id)}
                                             className="h-7 w-7 text-text-tertiary hover:bg-bg-lighter"
-                                            aria-label="Supprimer le lien"
+                                            aria-label={t("itemCard.delete_link_label")}
                                         >
                                             <X className="h-4 w-4" />
                                         </Button>
@@ -139,7 +154,7 @@ export function ItemCard({
                             icon={<LinkIcon className="h-4 w-4" />}
                             className="w-full min-w-0 sm:w-auto"
                         >
-                            Lien
+                            {t("itemCard.link_button")}
                         </Button>
                     ) : null}
                     {onEdit ? (
@@ -150,7 +165,7 @@ export function ItemCard({
                             icon={<Pencil className="h-4 w-4" />}
                             className="w-full min-w-0 sm:w-auto"
                         >
-                            Modifier
+                            {t("itemCard.edit_button")}
                         </Button>
                     ) : null}
                     {reserved && onClearReservation ? (
@@ -161,7 +176,7 @@ export function ItemCard({
                             icon={<RotateCcw className="h-4 w-4" />}
                             className="w-full min-w-0 sm:w-auto"
                         >
-                            Libérer
+                            {t("itemCard.release_button")}
                         </Button>
                     ) : null}
                     {onDelete ? (
@@ -172,7 +187,7 @@ export function ItemCard({
                             icon={<Trash2 className="h-4 w-4" />}
                             className="w-full min-w-0 sm:w-auto"
                         >
-                            Supprimer
+                            {t("itemCard.delete_button")}
                         </Button>
                     ) : null}
                 </div>
@@ -182,6 +197,7 @@ export function ItemCard({
 }
 
 function ItemImage({ item }: { item: Item }) {
+    const { t } = useTranslation();
     const [failed, setFailed] = useState(false);
     const image = item.links.find((link) => link.image)?.image;
 
@@ -203,13 +219,14 @@ function ItemImage({ item }: { item: Item }) {
         <div className="img-placeholder relative flex h-[200px] items-center justify-center overflow-hidden rounded-t-[18px]">
             <Butterfly index={item.id} size={90} className="absolute opacity-15" />
             <span className="relative font-mono text-[11px] tracking-[0.04em] text-primary opacity-70">
-                photo produit
+                {t("itemCard.product_photo")}
             </span>
         </div>
     );
 }
 
 function PublicItemCard({ item, onOffer }: { item: Item; onOffer?: (item: Item) => void }) {
+    const { t } = useTranslation();
     const reserved = item.is_reserved;
     const detailPath = `/item/${item.id}`;
 
@@ -235,7 +252,7 @@ function PublicItemCard({ item, onOffer }: { item: Item; onOffer?: (item: Item) 
                         </h3>
                         {reserved ? (
                             <span className="shrink-0 rounded-full bg-reserved px-2.5 py-1 text-[10px] font-bold tracking-[0.05em] text-reserved-text">
-                                Réservé
+                                {t("itemCard.reserved_badge")}
                             </span>
                         ) : null}
                         {!reserved && item.assigned_to ? (
@@ -304,7 +321,7 @@ function PublicItemCard({ item, onOffer }: { item: Item; onOffer?: (item: Item) 
                                 className="ml-auto inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border-0 bg-gradient-to-br from-primary to-primary-dark px-[18px] py-2.5 text-[13px] font-bold leading-none text-white shadow-md"
                             >
                                 <Gift className="h-4 w-4" />
-                                Offrir
+                                {t("itemCard.offer_button")}
                             </button>
                         ) : (
                             <button
@@ -312,7 +329,7 @@ function PublicItemCard({ item, onOffer }: { item: Item; onOffer?: (item: Item) 
                                 disabled
                                 className="ml-auto min-h-[44px] whitespace-nowrap rounded-xl border-[1.5px] border-reserved-border bg-transparent px-[18px] py-2.5 text-xs font-semibold leading-none text-[oklch(45%_0.12_295)]"
                             >
-                                Déjà réservé
+                                {t("itemCard.already_reserved")}
                             </button>
                         )}
                     </div>

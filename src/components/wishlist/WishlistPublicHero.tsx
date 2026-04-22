@@ -1,7 +1,10 @@
+import { useTranslation } from "../../i18n";
 import { Butterfly, ButterflyTrail } from "../Butterflies";
 import { Sparkle } from "./Sparkle";
 
 export function WishlistPublicHero() {
+  const { t } = useTranslation();
+
   return (
     <header className="relative z-[1] overflow-hidden px-6 py-[60px] text-center">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_0%,oklch(88%_0.10_295_/_0.55),transparent)]" />
@@ -31,13 +34,13 @@ export function WishlistPublicHero() {
           <Butterfly index={0} size={100} />
         </div>
         <p className="mb-2.5 font-heading text-[15px] font-normal uppercase italic tracking-[0.14em] text-primary">
-          Baby on the way
+          {t("publicHero.kicker")}
         </p>
         <h1 className="mb-4 font-heading text-[clamp(40px,7vw,70px)] font-light leading-[1.05] text-text-primary">
-          Notre Liste de Naissance
+          {t("publicHero.title")}
         </h1>
         <p className="mx-auto max-w-[460px] text-[15px] leading-relaxed text-text-secondary">
-          Choisissez un cadeau à offrir à notre petit trésor qui arrive bientôt.
+          {t("publicHero.description")}
         </p>
         <div className="mt-5 flex justify-center gap-2.5 text-price-light">
           <Sparkle size={9} />
