@@ -14,6 +14,8 @@ export type Item = {
   category_id: number;
   name: string;
   note: string | null;
+  name_he: string | null;
+  note_he: string | null;
   is_checked: boolean;
   is_reserved: boolean;
   reserved_first_name: string | null;
@@ -59,6 +61,8 @@ export type NewItemInput = {
   category_id: number;
   name: string;
   note?: string | null;
+  name_he?: string | null;
+  note_he?: string | null;
   assigned_to?: string | null;
   price_estimate?: number | null;
   fallback_image?: string | null;

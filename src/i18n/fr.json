@@ -74,8 +74,10 @@
   "addItemModal": {
     "title_add": "Ajouter un article",
     "title_edit": "Modifier l'article",
-    "name_label": "Nom",
-    "note_label": "Note",
+    "name_fr_label": "Nom (FR)",
+    "name_he_label": "Nom (HE)",
+    "note_fr_label": "Note (FR)",
+    "note_he_label": "Note (HE)",
     "category_label": "Catégorie",
     "assigned_to_label": "Assigné à",
     "price_label": "Prix estimé",

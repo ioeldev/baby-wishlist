@@ -22,6 +22,8 @@ export function AddItemModal({ open, categories, item, onClose, onSubmit }: Prop
     category_id: z.coerce.number().int().positive(),
     name: z.string().trim().min(1, t("addItemModal.error_name_required")),
     note: z.string().trim().optional(),
+    name_he: z.string().trim().optional(),
+    note_he: z.string().trim().optional(),
     assigned_to: z.string().trim().optional(),
     price_estimate: z.union([z.literal(""), z.coerce.number().nonnegative()]).optional(),
   });
@@ -40,6 +42,8 @@ export function AddItemModal({ open, categories, item, onClose, onSubmit }: Prop
       category_id: form.get("category_id"),
       name: form.get("name"),
       note: form.get("note"),
+      name_he: form.get("name_he"),
+      note_he: form.get("note_he"),
       assigned_to: form.get("assigned_to"),
       price_estimate: form.get("price_estimate"),
     });
@@ -56,6 +60,8 @@ export function AddItemModal({ open, categories, item, onClose, onSubmit }: Prop
         category_id: value.category_id,
         name: value.name,
         note: value.note || null,
+        name_he: value.name_he?.trim() ? value.name_he.trim() : null,
+        note_he: value.note_he?.trim() ? value.note_he.trim() : null,
         assigned_to: value.assigned_to || null,
         price_estimate: value.price_estimate === "" ? null : value.price_estimate ?? null,
       });
@@ -70,12 +76,22 @@ export function AddItemModal({ open, categories, item, onClose, onSubmit }: Prop
   return (
     <Modal title={item ? t("addItemModal.title_edit") : t("addItemModal.title_add")} maxWidth="xl" onClose={onClose}>
       <form onSubmit={handleSubmit} className="grid gap-4">
-        <Field label={t("addItemModal.name_label")} className={WISHLIST_FORM_LABEL}>
-          <TextInput name="name" defaultValue={item?.name ?? ""} className={WISHLIST_FORM_FIELD} required />
-        </Field>
-        <Field label={t("addItemModal.note_label")} className={WISHLIST_FORM_LABEL}>
-          <TextArea name="note" defaultValue={item?.note ?? ""} className={WISHLIST_FORM_FIELD} />
-        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={t("addItemModal.name_fr_label")} className={WISHLIST_FORM_LABEL}>
+            <TextInput name="name" defaultValue={item?.name ?? ""} className={WISHLIST_FORM_FIELD} required />
+          </Field>
+          <Field label={t("addItemModal.name_he_label")} className={WISHLIST_FORM_LABEL}>
+            <TextInput name="name_he" dir="rtl" defaultValue={item?.name_he ?? ""} className={WISHLIST_FORM_FIELD} />
+          </Field>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={t("addItemModal.note_fr_label")} className={WISHLIST_FORM_LABEL}>
+            <TextArea name="note" defaultValue={item?.note ?? ""} className={WISHLIST_FORM_FIELD} />
+          </Field>
+          <Field label={t("addItemModal.note_he_label")} className={WISHLIST_FORM_LABEL}>
+            <TextArea name="note_he" dir="rtl" defaultValue={item?.note_he ?? ""} className={WISHLIST_FORM_FIELD} />
+          </Field>
+        </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t("addItemModal.category_label")} className={WISHLIST_FORM_LABEL}>
             <SelectInput name="category_id" defaultValue={item?.category_id ?? categories[0]?.id} className={WISHLIST_FORM_FIELD}>

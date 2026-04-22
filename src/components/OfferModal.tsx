@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from "react";
 import type { Item, ReserveItemInput } from "../types";
-import { useTranslation } from "../i18n";
+import { useLocalizeItem, useTranslation } from "../i18n";
 import { Butterfly } from "./Butterflies";
 import { Notice } from "./ui";
 
@@ -12,6 +12,7 @@ type Props = {
 
 export function OfferModal({ item, onClose, onReserve }: Props) {
   const { t } = useTranslation();
+  const { localName } = useLocalizeItem();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -66,7 +67,7 @@ export function OfferModal({ item, onClose, onReserve }: Props) {
         ) : (
           <>
             <h3 className="mb-1 font-heading text-[26px] font-semibold leading-tight text-text-primary">{t("offerModal.title")}</h3>
-            <p className="mb-6 text-sm italic text-text-tertiary">{item.name}</p>
+            <p className="mb-6 text-sm italic text-text-tertiary">{localName(item)}</p>
             <form onSubmit={handleSubmit} className="grid gap-3.5">
               <label>
                 <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-text-secondary">{t("offerModal.first_name_label")}</span>

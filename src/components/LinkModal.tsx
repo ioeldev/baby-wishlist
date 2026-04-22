@@ -1,7 +1,7 @@
 import { Search, Upload, X } from "lucide-react";
 import { type FormEvent, useRef, useState } from "react";
 import type { Item, LinkPreview } from "../types";
-import { useTranslation } from "../i18n";
+import { useLocalizeItem, useTranslation } from "../i18n";
 import { WISHLIST_FORM_FIELD, WISHLIST_FORM_LABEL } from "./wishlist";
 import { Button, Field, Modal, Notice, TextInput } from "./ui";
 
@@ -17,6 +17,7 @@ type Props = {
 
 export function LinkModal({ item, preview, loading, error, onPreview, onSave, onClose }: Props) {
   const { t } = useTranslation();
+  const { localName } = useLocalizeItem();
   const [url, setUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [fallbackFile, setFallbackFile] = useState<File | null>(null);
@@ -90,7 +91,7 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
   return (
     <Modal title={t("linkModal.title")} maxWidth="xl" onClose={onClose}>
       <div className="grid gap-4">
-        <p className="text-[15px] text-text-secondary">{item.name}</p>
+        <p className="text-[15px] text-text-secondary">{localName(item)}</p>
         <form onSubmit={event => void handlePreview(event)} className="grid gap-2">
           <Field label="URL" className={WISHLIST_FORM_LABEL}>
             <div className="flex min-w-0 items-stretch gap-2">

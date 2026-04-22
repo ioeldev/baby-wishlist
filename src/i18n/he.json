@@ -74,8 +74,10 @@
   "addItemModal": {
     "title_add": "הוספת פריט",
     "title_edit": "עריכת פריט",
-    "name_label": "שם",
-    "note_label": "הערה",
+    "name_fr_label": "שם (צרפתית)",
+    "name_he_label": "שם (עברית)",
+    "note_fr_label": "הערה (צרפתית)",
+    "note_he_label": "הערה (עברית)",
     "category_label": "קטגוריה",
     "assigned_to_label": "מיועד ל",
     "price_label": "מחיר משוער",

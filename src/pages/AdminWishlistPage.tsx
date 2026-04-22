@@ -28,13 +28,14 @@ import {
     useUpdateItem,
     useWishlist,
 } from "../hooks/useWishlist";
-import { useTranslation } from "../i18n";
+import { useLocalizeItem, useTranslation } from "../i18n";
 import type { Item, LinkPreview, NewItemInput } from "../types";
 
 type AdminFilter = "all" | "unchecked" | "checked";
 
 export function AdminWishlistPage() {
     const { t } = useTranslation();
+    const { localName } = useLocalizeItem();
     const [adminToken, setAdminToken] = useState(() => localStorage.getItem("adminToken") ?? "");
     const wishlist = useWishlist(true, Boolean(adminToken));
     const createCategory = useCreateCategory();
@@ -230,13 +231,13 @@ export function AdminWishlistPage() {
                         onAddLink={setLinkItem}
                         onEdit={openEdit}
                         onDelete={(item) => {
-                            if (confirm(t("adminWishlist.confirm_delete_item", { name: item.name }))) {
+                            if (confirm(t("adminWishlist.confirm_delete_item", { name: localName(item) }))) {
                                 deleteItem.mutate(item.id);
                             }
                         }}
                         onDeleteLink={(id) => deleteItemLink.mutate(id)}
                         onClearReservation={(item) => {
-                            if (confirm(t("adminWishlist.confirm_clear_reservation", { name: item.name }))) {
+                            if (confirm(t("adminWishlist.confirm_clear_reservation", { name: localName(item) }))) {
                                 clearReservation.mutate(item.id);
                             }
                         }}

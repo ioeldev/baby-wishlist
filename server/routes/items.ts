@@ -7,6 +7,8 @@ const itemInput = z.object({
   category_id: z.coerce.number().int().positive(),
   name: z.string().trim().min(1),
   note: z.string().trim().optional().nullable(),
+  name_he: z.string().trim().optional().nullable(),
+  note_he: z.string().trim().optional().nullable(),
   assigned_to: z.string().trim().optional().nullable(),
   price_estimate: z.coerce.number().nonnegative().optional().nullable(),
 });
@@ -95,13 +97,15 @@ export async function itemRoutes(app: FastifyInstance) {
     if (!requireAdmin(request, reply)) return;
     const body = itemInput.parse(request.body);
     const result = db.query(`
-      INSERT INTO items (category_id, name, note, assigned_to, price_estimate)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO items (category_id, name, note, name_he, note_he, assigned_to, price_estimate)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
       RETURNING *
     `).get(
       body.category_id,
       body.name,
       body.note ?? null,
+      body.name_he?.trim() ? body.name_he.trim() : null,
+      body.note_he?.trim() ? body.note_he.trim() : null,
       body.assigned_to ?? null,
       body.price_estimate ?? null,
     ) as Record<string, unknown>;
@@ -119,23 +123,37 @@ export async function itemRoutes(app: FastifyInstance) {
       return reply.code(404).send({ message: "Item not found" });
     }
 
+    function optionalTextOrNull(
+      value: string | null | undefined,
+      existing: string | null,
+    ): string | null {
+      if (value === undefined) return existing;
+      if (value === null) return null;
+      const trimmed = value.trim();
+      return trimmed === "" ? null : trimmed;
+    }
+
     const next = {
       category_id: body.category_id ?? Number(existing.category_id),
       name: body.name ?? String(existing.name),
       note: body.note === undefined ? (existing.note as string | null) : body.note,
+      name_he: optionalTextOrNull(body.name_he, existing.name_he as string | null),
+      note_he: optionalTextOrNull(body.note_he, existing.note_he as string | null),
       assigned_to: body.assigned_to === undefined ? (existing.assigned_to as string | null) : body.assigned_to,
       price_estimate: body.price_estimate === undefined ? (existing.price_estimate as number | null) : body.price_estimate,
     };
 
     const updated = db.query(`
       UPDATE items
-      SET category_id = ?, name = ?, note = ?, assigned_to = ?, price_estimate = ?, updated_at = CURRENT_TIMESTAMP
+      SET category_id = ?, name = ?, note = ?, name_he = ?, note_he = ?, assigned_to = ?, price_estimate = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
       RETURNING *
     `).get(
       next.category_id,
       next.name,
       next.note,
+      next.name_he,
+      next.note_he,
       next.assigned_to,
       next.price_estimate,
       params.id,

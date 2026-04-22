@@ -8,7 +8,7 @@ import { WishlistPageFooter, WishlistPageShell } from "../components/wishlist";
 import { Notice } from "../components/ui";
 import { findItemInWishlist, getPrimaryItemImageUrl } from "../lib/itemHelpers";
 import { useReserveItem, useWishlist } from "../hooks/useWishlist";
-import { useTranslation } from "../i18n";
+import { useLocalizeItem, useTranslation } from "../i18n";
 import type { Item, ItemLink, ReserveItemInput } from "../types";
 
 function DetailHeroImage({ item, alt }: { item: Item; alt: string }) {
@@ -79,6 +79,7 @@ function ShopLinkCard({ link, index }: { link: ItemLink; index: number }) {
 
 export function PublicItemDetailPage() {
     const { t } = useTranslation();
+    const { localName, localNote } = useLocalizeItem();
     const { id: idParam } = useParams();
     const wishlist = useWishlist(false, true);
     const reserveItem = useReserveItem();
@@ -184,7 +185,7 @@ export function PublicItemDetailPage() {
                         <span className="text-[oklch(70%_0.08_295)]" aria-hidden="true">
                             /
                         </span>
-                        <span className="min-w-0 truncate text-[oklch(40%_0.12_295)]" title={item.name}>
+                        <span className="min-w-0 truncate text-[oklch(40%_0.12_295)]" title={localName(item)}>
                             {t("itemDetail.nav_item")}
                         </span>
                     </nav>
@@ -192,13 +193,13 @@ export function PublicItemDetailPage() {
 
                 <article>
                     <div style={{ animationDelay: "50ms" }} className="animate-detail-in">
-                        <DetailHeroImage item={item} alt={item.name} />
+                        <DetailHeroImage item={item} alt={localName(item)} />
                     </div>
 
                     <div style={{ animationDelay: "120ms" }} className="mt-8 animate-detail-in">
                         <div className="mb-3 flex flex-wrap items-start gap-3">
                             <h1 className="min-w-0 flex-1 font-['Cormorant_Garamond'] text-[clamp(28px,5vw,40px)] font-medium leading-tight text-[oklch(38%_0.18_295)]">
-                                {item.name}
+                                {localName(item)}
                             </h1>
                             {reserved ? (
                                 <span className="shrink-0 rounded-full bg-reserved px-3.5 py-1.5 text-xs font-bold tracking-[0.04em] text-reserved-text">
@@ -212,9 +213,9 @@ export function PublicItemDetailPage() {
                             ) : null}
                         </div>
 
-                        {item.note ? (
+                        {localNote(item) ? (
                             <p className="text-[16px] leading-relaxed text-[oklch(45%_0.10_295)] [text-wrap:pretty]">
-                                {item.note}
+                                {localNote(item)}
                             </p>
                         ) : null}
 

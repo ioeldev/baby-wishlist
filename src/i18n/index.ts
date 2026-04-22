@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, type ReactNode, createElement } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode, createElement } from "react";
+import type { Item } from "../types";
 import fr from "./fr.json";
 import he from "./he.json";
 
@@ -67,4 +68,25 @@ export function useTranslation() {
     const ctx = useContext(I18nContext);
     if (!ctx) throw new Error("useTranslation must be used inside I18nProvider");
     return ctx;
+}
+
+export function useLocalizeItem() {
+    const { locale } = useTranslation();
+
+    const localName = useCallback(
+        (item: Item) =>
+            locale === "he" && item.name_he && item.name_he.trim().length > 0 ? item.name_he : item.name,
+        [locale],
+    );
+
+    const localNote = useCallback(
+        (item: Item) => {
+            if (locale !== "he") return item.note;
+            if (item.note_he && item.note_he.trim().length > 0) return item.note_he;
+            return item.note;
+        },
+        [locale],
+    );
+
+    return useMemo(() => ({ localName, localNote }), [localName, localNote]);
 }

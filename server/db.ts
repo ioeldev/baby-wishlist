@@ -68,6 +68,14 @@ export function migrate() {
   if (!existing.has("fallback_image")) {
     db.exec("ALTER TABLE items ADD COLUMN fallback_image TEXT");
   }
+
+  if (!existing.has("name_he")) {
+    db.exec("ALTER TABLE items ADD COLUMN name_he TEXT");
+  }
+
+  if (!existing.has("note_he")) {
+    db.exec("ALTER TABLE items ADD COLUMN note_he TEXT");
+  }
 }
 
 export function toBoolean(value: unknown) {

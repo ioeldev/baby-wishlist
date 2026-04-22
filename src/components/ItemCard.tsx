@@ -2,7 +2,7 @@ import { ExternalLink, Gift, LinkIcon, Pencil, RotateCcw, Trash2, X } from "luci
 import { useState } from "react";
 import { Link } from "react-router";
 import type { Item } from "../types";
-import { useTranslation } from "../i18n";
+import { useLocalizeItem, useTranslation } from "../i18n";
 import { Butterfly } from "./Butterflies";
 import { Button } from "./ui";
 
@@ -46,6 +46,7 @@ function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLi
     onClearReservation?: (item: Item) => void;
 }) {
     const { t } = useTranslation();
+    const { localName, localNote } = useLocalizeItem();
 
     return (
         <article
@@ -61,7 +62,7 @@ function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLi
                             reserved ? "text-text-tertiary" : "text-text-primary"
                         }`}
                     >
-                        {item.name}
+                        {localName(item)}
                     </h3>
                     {reserved ? (
                         <span className="shrink-0 rounded-full bg-reserved px-2.5 py-1 text-[10px] font-bold tracking-[0.05em] text-reserved-text">
@@ -70,8 +71,8 @@ function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLi
                     ) : null}
                 </div>
 
-                {item.note ? (
-                    <p className="text-[13px] italic leading-relaxed text-text-tertiary">{item.note}</p>
+                {localNote(item) ? (
+                    <p className="text-[13px] italic leading-relaxed text-text-tertiary">{localNote(item)}</p>
                 ) : null}
 
                 <div className="grid min-h-7 grid-cols-[minmax(0,1fr)_auto] items-start gap-2 text-[11px]">
@@ -198,6 +199,7 @@ function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLi
 
 function ItemImage({ item }: { item: Item }) {
     const { t } = useTranslation();
+    const { localName } = useLocalizeItem();
     const [failed, setFailed] = useState(false);
     const scrapedImage = item.links.find((link) => link.image)?.image;
     const displayImage = scrapedImage && !failed ? scrapedImage : item.fallback_image;
@@ -207,7 +209,7 @@ function ItemImage({ item }: { item: Item }) {
             <div className="relative h-[200px] overflow-hidden rounded-t-[18px] bg-[oklch(97%_0.02_295)]">
                 <img
                     src={displayImage}
-                    alt={item.name}
+                    alt={localName(item)}
                     onError={() => setFailed(true)}
                     className="h-full w-full object-contain p-3 transition duration-300"
                 />
@@ -228,6 +230,7 @@ function ItemImage({ item }: { item: Item }) {
 
 function PublicItemCard({ item, onOffer }: { item: Item; onOffer?: (item: Item) => void }) {
     const { t } = useTranslation();
+    const { localName, localNote } = useLocalizeItem();
     const reserved = item.is_reserved;
     const detailPath = `/item/${item.id}`;
 
@@ -249,7 +252,7 @@ function PublicItemCard({ item, onOffer }: { item: Item; onOffer?: (item: Item) 
                                 reserved ? "text-text-tertiary" : "text-text-primary"
                             }`}
                         >
-                            {item.name}
+                            {localName(item)}
                         </h3>
                         {reserved ? (
                             <span className="shrink-0 rounded-full bg-reserved px-2.5 py-1 text-[10px] font-bold tracking-[0.05em] text-reserved-text">
@@ -263,9 +266,9 @@ function PublicItemCard({ item, onOffer }: { item: Item; onOffer?: (item: Item) 
                         ) : null}
                     </div>
 
-                    {item.note ? (
+                    {localNote(item) ? (
                         <p className="line-clamp-2 text-[13px] italic leading-relaxed text-text-tertiary pointer-events-none">
-                            {item.note}
+                            {localNote(item)}
                         </p>
                     ) : null}
 
