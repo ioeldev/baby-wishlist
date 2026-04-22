@@ -45,6 +45,9 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
 
       const response = await fetch(`/api/items/${item.id}/upload-fallback`, {
         method: "POST",
+        headers: {
+          "x-admin-token": localStorage.getItem("adminToken") ?? "",
+        },
         body: formData,
       });
 
