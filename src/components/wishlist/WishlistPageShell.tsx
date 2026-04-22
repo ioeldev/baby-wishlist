@@ -7,7 +7,7 @@ type Props = {
 
 export function WishlistPageShell({ children }: Props) {
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[oklch(97.5%_0.018_295)] font-['Nunito'] text-[oklch(22%_0.06_295)]">
+    <div className="relative min-h-screen overflow-x-hidden bg-bg-white font-['Nunito'] text-text-dark">
       <div className="pointer-events-none fixed bottom-0 left-0 z-0 opacity-[0.07] rotate-[5deg] max-sm:hidden">
         <ButterflyTrail size={500} />
       </div>
