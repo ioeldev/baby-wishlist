@@ -68,7 +68,7 @@ export async function uploadRoutes(app: FastifyInstance) {
 
       try {
         const s3file = s3.file(fileName);
-        await s3file.write(buffer, { type: data.mimetype });
+        await s3file.write(buffer, { type: data.mimetype, acl: "public-read" });
 
         const publicBaseUrl = S3_PUBLIC_BASE_URL || S3_ENDPOINT;
         const fileUrl = `${publicBaseUrl}/${S3_BUCKET}/${fileName}`;
