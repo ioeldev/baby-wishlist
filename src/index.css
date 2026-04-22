@@ -54,9 +54,9 @@
   --color-bg-lighter: oklch(96% 0.04 295);
 
   /* Colors - Status & Accents */
-  --color-reserved: oklch(88% 0.06 160);
-  --color-reserved-text: oklch(38% 0.12 160);
-  --color-reserved-border: oklch(75% 0.06 160);
+  --color-reserved: oklch(90% 0.06 295);
+  --color-reserved-text: oklch(35% 0.15 295);
+  --color-reserved-border: oklch(78% 0.07 295);
   --color-price: oklch(62% 0.15 82);
   --color-price-light: oklch(74% 0.13 82);
 
