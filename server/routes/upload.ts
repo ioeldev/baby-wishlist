@@ -1,11 +1,10 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3 } from "bun";
 import { requireAdmin } from "../auth";
 import { db } from "../db";
 
 const {
-  S3_REGION,
   S3_ENDPOINT,
   S3_ACCESS_KEY_ID,
   S3_SECRET_ACCESS_KEY,
@@ -24,15 +23,6 @@ if (!S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY) {
     "S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY environment variables are required"
   );
 }
-
-const s3Client = new S3Client({
-  region: S3_REGION || "us-east-1",
-  endpoint: S3_ENDPOINT,
-  credentials: {
-    accessKeyId: S3_ACCESS_KEY_ID,
-    secretAccessKey: S3_SECRET_ACCESS_KEY,
-  },
-});
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -77,14 +67,8 @@ export async function uploadRoutes(app: FastifyInstance) {
       const fileName = `fallback-${params.itemId}-${Date.now()}-${data.filename}`;
 
       try {
-        await s3Client.send(
-          new PutObjectCommand({
-            Bucket: S3_BUCKET,
-            Key: fileName,
-            Body: buffer,
-            ContentType: data.mimetype,
-          })
-        );
+        const s3file = s3.file(fileName);
+        await s3file.write(buffer, { type: data.mimetype });
 
         const publicBaseUrl = S3_PUBLIC_BASE_URL || S3_ENDPOINT;
         const fileUrl = `${publicBaseUrl}/${S3_BUCKET}/${fileName}`;
