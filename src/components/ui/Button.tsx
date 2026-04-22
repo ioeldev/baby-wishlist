@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "danger" | "dark" | "ghost";
+type Variant = "primary" | "secondary" | "danger" | "dark" | "ghost" | "wishlistPrimary" | "wishlistSecondary" | "wishlistDanger";
 type Size = "sm" | "md" | "icon";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -15,6 +15,12 @@ const variants: Record<Variant, string> = {
   danger: "border border-red-100 bg-white text-red-700 hover:bg-red-50",
   dark: "bg-slate-900 text-white hover:bg-slate-800",
   ghost: "text-slate-500 hover:bg-slate-100 hover:text-slate-700",
+  wishlistPrimary:
+    "border border-transparent bg-gradient-to-br from-[oklch(68%_0.16_295)] to-[oklch(52%_0.20_295)] text-white shadow-[0_4px_14px_oklch(52%_0.20_295_/_0.3)] hover:opacity-[0.96]",
+  wishlistSecondary:
+    "border-[1.5px] border-[oklch(80%_0.12_295)] bg-white text-[oklch(38%_0.18_295)] hover:bg-[oklch(99%_0.02_295)]",
+  wishlistDanger:
+    "border-[1.5px] border-[oklch(80%_0.12_160)] bg-white text-[oklch(45%_0.14_25)] hover:bg-[oklch(97%_0.04_25)]",
 };
 
 const sizes: Record<Size, string> = {
@@ -23,11 +29,14 @@ const sizes: Record<Size, string> = {
   icon: "h-10 w-10 justify-center p-0",
 };
 
-export function Button({ variant = "secondary", size = "md", icon, className = "", children, ...props }: Props) {
+const wishlistRadius = (variant: Variant) =>
+  variant === "wishlistPrimary" || variant === "wishlistSecondary" || variant === "wishlistDanger" ? "rounded-xl" : "rounded-md";
+
+export function Button({ variant = "secondary", size = "md", icon, className = "", type = "button", children, ...props }: Props) {
   return (
     <button
-      type="button"
-      className={`inline-flex items-center justify-center rounded-md font-semibold transition disabled:opacity-60 ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center font-semibold transition disabled:opacity-60 ${wishlistRadius(variant)} ${variants[variant]} ${sizes[size]} ${className}`}
+      type={type}
       {...props}
     >
       {icon}

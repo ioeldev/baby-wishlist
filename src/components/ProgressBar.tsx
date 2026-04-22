@@ -3,9 +3,10 @@ import type { CategoryWithItems } from "../types";
 
 type Props = {
   categories: CategoryWithItems[];
+  variant?: "admin" | "public";
 };
 
-export function ProgressBar({ categories }: Props) {
+export function ProgressBar({ categories, variant = "admin" }: Props) {
   const items = categories.flatMap(category => category.items);
   const total = items.length;
   const reserved = items.filter(item => item.is_reserved).length;
@@ -14,21 +15,30 @@ export function ProgressBar({ categories }: Props) {
   const reservedBudget = items.filter(item => item.is_reserved).reduce((sum, item) => sum + (item.price_estimate ?? 0), 0);
 
   return (
-    <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 sm:px-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold text-slate-900">{reserved}/{total} articles réservés</p>
-            <p className="text-xs text-slate-500">{percent}% de la wishlist réservé</p>
+    <div className="relative z-10">
+      <div className="bg-[oklch(92%_0.07_295)] text-[oklch(38%_0.18_295)]">
+        <div className="mx-auto flex max-w-[1140px] items-center gap-3 px-6 py-2.5">
+          <span className="shrink-0 whitespace-nowrap text-xs font-semibold">
+            {reserved}/{total} réservés
+          </span>
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[oklch(80%_0.12_295)]">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-[oklch(68%_0.16_295)] to-[oklch(52%_0.20_295)] transition-all duration-700"
+              style={{ width: `${percent}%` }}
+            />
           </div>
-          <div className="flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700">
-            <Euro className="h-4 w-4" />
-            <span>{reservedBudget.toFixed(0)} / {estimated.toFixed(0)}</span>
+          <span className="shrink-0 text-xs font-bold">{percent}%</span>
+        </div>
+        {variant === "admin" ? (
+          <div className="border-t border-[oklch(86%_0.09_295)] bg-[oklch(94%_0.06_295_/_0.88)]">
+            <div className="mx-auto flex max-w-[1140px] flex-wrap items-center justify-end gap-2 px-6 py-2 text-[13px] text-[oklch(45%_0.10_295)]">
+              <span className="inline-flex items-center gap-1.5 font-medium">
+                <Euro className="h-3.5 w-3.5 text-[oklch(58%_0.12_295)]" aria-hidden="true" />
+                {reservedBudget.toFixed(0)} / {estimated.toFixed(0)} €
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-          <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${percent}%` }} />
-        </div>
+        ) : null}
       </div>
     </div>
   );

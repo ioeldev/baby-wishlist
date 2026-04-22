@@ -1,7 +1,11 @@
 import { FolderCog, Plus, Save, Trash2 } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import type { CategoryWithItems, NewCategoryInput, UpdateCategoryInput } from "../types";
+import { WISHLIST_FORM_FIELD, WISHLIST_FORM_LABEL } from "./wishlist";
 import { Button, Field, Modal, Notice, TextInput } from "./ui";
+
+const cardClass =
+  "grid gap-3 rounded-[14px] border-[1.5px] border-[oklch(92%_0.07_295)] bg-[oklch(99.2%_0.015_295)] p-4";
 
 type Props = {
   open: boolean;
@@ -80,58 +84,75 @@ export function CategoryManagerModal({ open, categories, onClose, onCreate, onUp
   }
 
   return (
-    <Modal title="Gérer les catégories" maxWidth="xl" onClose={onClose}>
-      <div className="grid gap-5 p-5">
-        <form onSubmit={handleCreate} className="grid gap-3 rounded-lg border border-slate-200 p-4">
-          <div className="flex items-center gap-2 font-semibold text-slate-950">
-            <FolderCog className="h-5 w-5 text-emerald-700" />
+    <Modal title="Gérer les catégories" maxWidth="2xl" onClose={onClose}>
+      <div className="grid gap-5">
+        <form onSubmit={handleCreate} className={`${cardClass} gap-3`}>
+          <div className="flex items-center gap-2 font-['Cormorant_Garamond'] text-lg font-medium text-[oklch(38%_0.18_295)]">
+            <FolderCog className="h-5 w-5 text-[oklch(55%_0.18_295)]" aria-hidden="true" />
             Nouvelle catégorie
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
             <TextInput
               value={newName}
               onChange={event => setNewName(event.target.value)}
               placeholder="Ex: Sorties & voyages"
-              className="min-w-0 flex-1"
+              className={`min-w-0 flex-1 ${WISHLIST_FORM_FIELD}`}
             />
-            <Button type="submit" variant="primary" disabled={busyId === "new"} icon={<Plus className="h-4 w-4" />}>
+            <Button
+              type="submit"
+              variant="wishlistPrimary"
+              disabled={busyId === "new"}
+              className="shrink-0 sm:min-w-[120px]"
+              icon={<Plus className="h-4 w-4" aria-hidden="true" />}
+            >
               Ajouter
             </Button>
           </div>
         </form>
 
-        {error ? <Notice tone="error">{error}</Notice> : null}
+        {error ? (
+          <Notice tone="error" className="rounded-[12px] border border-red-200/60 px-3 py-2.5 text-sm">
+            {error}
+          </Notice>
+        ) : null}
 
         <div className="grid gap-3">
           {categories.map(category => (
             <form
               key={category.id}
-              onSubmit={event => handleUpdate(event, category)}
-              className="grid gap-3 rounded-lg border border-slate-200 p-4"
+              onSubmit={event => void handleUpdate(event, category)}
+              className={cardClass}
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-sm font-semibold text-slate-500">
+                <span className="text-sm font-medium text-[oklch(50%_0.10_295)]">
                   {category.reserved_count}/{category.total_count} articles réservés
                 </span>
-                <span className="text-xs text-slate-400">ID {category.id}</span>
+                <span className="text-xs text-[oklch(60%_0.08_295)]">ID {category.id}</span>
               </div>
-              <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_96px] sm:items-end">
-                <Field label="Nom">
-                  <TextInput name="name" defaultValue={category.name} />
+              <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_104px] sm:items-end">
+                <Field label="Nom" className={WISHLIST_FORM_LABEL}>
+                  <TextInput name="name" defaultValue={category.name} className={WISHLIST_FORM_FIELD} required />
                 </Field>
-                <Field label="Ordre">
-                  <TextInput name="sort_order" type="number" defaultValue={category.sort_order} />
+                <Field label="Ordre" className={WISHLIST_FORM_LABEL}>
+                  <TextInput name="sort_order" type="number" defaultValue={category.sort_order} className={WISHLIST_FORM_FIELD} />
                 </Field>
                 <div className="flex min-w-0 flex-wrap gap-2 sm:col-span-2 sm:justify-end">
-                  <Button type="submit" size="sm" disabled={busyId === category.id} icon={<Save className="h-4 w-4" />}>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    variant="wishlistSecondary"
+                    disabled={busyId === category.id}
+                    icon={<Save className="h-4 w-4" aria-hidden="true" />}
+                  >
                     Sauver
                   </Button>
                   <Button
-                    variant="danger"
+                    type="button"
+                    variant="wishlistDanger"
                     size="sm"
                     disabled={busyId === category.id}
                     onClick={() => void handleDelete(category)}
-                    icon={<Trash2 className="h-4 w-4" />}
+                    icon={<Trash2 className="h-4 w-4" aria-hidden="true" />}
                   >
                     Supprimer
                   </Button>

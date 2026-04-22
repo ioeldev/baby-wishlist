@@ -1,17 +1,19 @@
 import { serve } from "bun";
 import fastify from "fastify";
 import dotenv from "dotenv";
+import path from "node:path";
 dotenv.config();
-import index from "../src/index.html";
 import { migrate } from "./db";
 import { categoryRoutes } from "./routes/categories";
 import { itemRoutes } from "./routes/items";
 import { previewRoutes } from "./routes/preview";
-
 migrate();
 
 const api = fastify({ logger: process.env.NODE_ENV === "production" });
 const port = Number(process.env.PORT ?? 3001);
+const production = process.env.NODE_ENV === "production";
+const distDir = path.join(process.cwd(), "dist");
+const devIndex = production ? null : (await import("../src/index.html")).default;
 
 await api.register(
     async (app) => {
@@ -45,14 +47,51 @@ async function handleApiRequest(request: Request) {
     });
 }
 
+async function handleStaticRequest(request: Request) {
+    const url = new URL(request.url);
+    const pathname = decodeURIComponent(url.pathname);
+    const requestedPath = pathname === "/" ? "/index.html" : pathname;
+    const normalizedPath = path.normalize(requestedPath).replace(/^(\.\.(\/|\\|$))+/, "");
+    const filePath = path.join(distDir, normalizedPath);
+
+    if (!filePath.startsWith(distDir)) {
+        return new Response("Not found", { status: 404 });
+    }
+
+    const file = Bun.file(filePath);
+    if (await file.exists()) {
+        return new Response(file);
+    }
+
+    if (path.extname(pathname)) {
+        return new Response("Not found", { status: 404 });
+    }
+
+    const indexFile = Bun.file(path.join(distDir, "index.html"));
+    if (await indexFile.exists()) {
+        return new Response(indexFile);
+    }
+
+    return new Response("Frontend build not found. Run `bun run build` before `bun start`.", { status: 500 });
+}
+
+if (!production && !devIndex) {
+    throw new Error("Development frontend entry not available");
+}
+
 const server = serve({
     hostname: "0.0.0.0",
     port,
-    routes: {
-        "/api/*": handleApiRequest,
-        "/*": index,
-    },
-    development: process.env.NODE_ENV !== "production" && {
+    routes: production
+        ? {
+            "/api/*": handleApiRequest,
+            "/*": handleStaticRequest,
+        }
+        : {
+            "/api/*": handleApiRequest,
+            "/*": devIndex!,
+        },
+    development: !production && {
         hmr: true,
         console: true,
     },
