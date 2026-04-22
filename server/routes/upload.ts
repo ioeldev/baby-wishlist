@@ -28,6 +28,7 @@ const s3 = new S3Client({
   accessKeyId: MINIO_ROOT_USER,
   secretAccessKey: MINIO_ROOT_PASSWORD,
   bucket: MINIO_BUCKET,
+  region: "us-east-1",
 });
 
 const publicBase = MINIO_PUBLIC_ENDPOINT.replace(/\/$/, "");
@@ -77,7 +78,6 @@ export async function uploadRoutes(app: FastifyInstance) {
       const uploadUrl = s3.presign(key, {
         method: "PUT",
         type: body.contentType,
-        acl: "public-read",
         expiresIn: PRESIGN_EXPIRES_IN,
       });
 
