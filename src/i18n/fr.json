@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "cancel": "Annuler",
+    "save_idle": "Enregistrer",
+    "save_busy": "Enregistrement...",
+    "add_idle": "Ajouter",
+    "add_busy": "Ajout...",
+    "delete": "Supprimer",
+    "edit": "Modifier"
+  },
+  "progressBar": {
+    "reserved_count": "{{reserved}}/{{total}} réservés"
+  },
+  "languageSelector": {
+    "label": "Langue"
+  },
+  "publicHero": {
+    "kicker": "Baby on the way",
+    "title": "Notre Liste de Naissance",
+    "description": "Choisissez un cadeau à offrir à notre petit trésor qui arrive bientôt."
+  },
+  "publicWishlist": {
+    "filter_all": "Tous",
+    "filter_available": "Disponibles",
+    "filter_reserved": "Réservés",
+    "all_label": "Tout voir",
+    "empty_message": "Aucun article ici.",
+    "footer_message": "Merci pour votre amour et vos cadeaux"
+  },
+  "adminWishlist": {
+    "kicker": "Espace gérant",
+    "title": "Baby Wishlist",
+    "description": "Gérez la liste, les liens, les catégories et les réservations en un seul endroit.",
+    "filter_all": "Tout",
+    "filter_available": "Disponibles",
+    "filter_reserved": "Réservés",
+    "all_label": "Tout",
+    "categories_button": "Catégories",
+    "add_button": "Ajouter",
+    "token_label": "Token admin",
+    "enter_button": "Entrer",
+    "empty_message": "Aucun article pour ce filtre.",
+    "footer_message": "Administration de la liste de naissance",
+    "confirm_delete_item": "Supprimer \"{{name}}\" ?",
+    "confirm_clear_reservation": "Libérer la réservation de \"{{name}}\" ?",
+    "error_preview": "Prévisualisation impossible"
+  },
+  "itemCard": {
+    "reserved_badge": "Réservé",
+    "open_link_label": "Ouvrir le lien",
+    "delete_link_label": "Supprimer le lien",
+    "link_button": "Lien",
+    "edit_button": "Modifier",
+    "release_button": "Libérer",
+    "delete_button": "Supprimer",
+    "offer_button": "Offrir",
+    "already_reserved": "Déjà réservé",
+    "product_photo": "photo produit"
+  },
+  "offerModal": {
+    "title": "Offrir ce cadeau",
+    "first_name_label": "Prénom",
+    "first_name_placeholder": "Votre prénom",
+    "last_name_label": "Nom",
+    "last_name_placeholder": "Votre nom",
+    "submit_idle": "Je l'offre !",
+    "submit_busy": "Réservation...",
+    "success_title": "Merci !",
+    "success_message": "Votre cadeau est réservé avec amour.",
+    "error_required": "Nom et prénom sont obligatoires",
+    "error_reserve": "Impossible de réserver cet article"
+  },
+  "addItemModal": {
+    "title_add": "Ajouter un article",
+    "title_edit": "Modifier l'article",
+    "name_label": "Nom",
+    "note_label": "Note",
+    "category_label": "Catégorie",
+    "assigned_to_label": "Assigné à",
+    "price_label": "Prix estimé",
+    "save_idle": "Enregistrer",
+    "save_busy": "Enregistrement...",
+    "error_name_required": "Le nom est obligatoire",
+    "error_invalid_form": "Formulaire invalide",
+    "error_save": "Impossible d'enregistrer"
+  },
+  "categoryModal": {
+    "title": "Gérer les catégories",
+    "new_category": "Nouvelle catégorie",
+    "placeholder": "Ex: Sorties & voyages",
+    "reserved_count": "{{reserved}}/{{total}} articles réservés",
+    "name_label": "Nom",
+    "order_label": "Ordre",
+    "save_button": "Sauver",
+    "confirm_delete": "Supprimer \"{{name}}\" et ses {{count}} article(s) ?",
+    "error_name_required": "Le nom de la catégorie est obligatoire",
+    "error_add": "Impossible d'ajouter la catégorie",
+    "error_update": "Impossible de modifier la catégorie",
+    "error_delete": "Impossible de supprimer la catégorie"
+  },
+  "linkModal": {
+    "title": "Ajouter un lien",
+    "preview_label": "Prévisualiser",
+    "loading": "Chargement de la prévisualisation...",
+    "error_preview": "Prévisualisation impossible"
+  },
+  "itemDetail": {
+    "nav_list": "Liste",
+    "nav_item": "Fiche",
+    "breadcrumb_label": "Fil d'Ariane",
+    "reserved_badge": "Réservé",
+    "where_to_buy": "Où l'acheter",
+    "verified_links": "Liens vérifiés par les parents — ouvrez-les pour voir le détail, la taille, les couleurs, etc.",
+    "open_link": "Ouvrir le lien",
+    "see_offer": "Voir l'offre",
+    "no_links": "Aucun lien boutique pour l'instant — revenez plus tard.",
+    "offer_button": "Offrir ce cadeau",
+    "already_reserved": "Ce cadeau a déjà été choisi. Merci de votre générosité !",
+    "not_found_title": "Article introuvable",
+    "not_found_description": "Ce cadeau n'existe pas ou n'est plus sur la liste.",
+    "back_to_list": "Retour à la liste",
+    "product_photo": "photo produit",
+    "footer_message": "Merci pour votre amour et vos cadeaux"
+  },
+  "categorySection": {
+    "reserved_percent": "{{reserved}}/{{total}} réservés · {{percent}}%"
+  }
+}

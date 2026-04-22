@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from "react";
 import type { Item, ReserveItemInput } from "../types";
+import { useTranslation } from "../i18n";
 import { Butterfly } from "./Butterflies";
 import { Notice } from "./ui";
 
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export function OfferModal({ item, onClose, onReserve }: Props) {
+  const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -23,7 +25,7 @@ export function OfferModal({ item, onClose, onReserve }: Props) {
     const lastName = String(form.get("last_name") ?? "").trim();
 
     if (!firstName || !lastName) {
-      setError("Nom et prénom sont obligatoires");
+      setError(t("offerModal.error_required"));
       return;
     }
 
@@ -37,7 +39,7 @@ export function OfferModal({ item, onClose, onReserve }: Props) {
         onClose();
       }, 900);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Impossible de réserver cet article");
+      setError(err instanceof Error ? err.message : t("offerModal.error_reserve"));
     } finally {
       setBusy(false);
     }
@@ -58,31 +60,31 @@ export function OfferModal({ item, onClose, onReserve }: Props) {
         {done ? (
           <div className="py-5 text-center animate-public-fade-up">
             <Butterfly index={0} size={72} className="mx-auto mb-3.5 animate-public-float-a" />
-            <h3 className="mb-2 font-heading text-3xl font-semibold text-text-primary">Merci !</h3>
-            <p className="text-sm text-text-secondary">Votre cadeau est réservé avec amour.</p>
+            <h3 className="mb-2 font-heading text-3xl font-semibold text-text-primary">{t("offerModal.success_title")}</h3>
+            <p className="text-sm text-text-secondary">{t("offerModal.success_message")}</p>
           </div>
         ) : (
           <>
-            <h3 className="mb-1 font-heading text-[26px] font-semibold leading-tight text-text-primary">Offrir ce cadeau</h3>
+            <h3 className="mb-1 font-heading text-[26px] font-semibold leading-tight text-text-primary">{t("offerModal.title")}</h3>
             <p className="mb-6 text-sm italic text-text-tertiary">{item.name}</p>
             <form onSubmit={handleSubmit} className="grid gap-3.5">
               <label>
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-text-secondary">Prénom</span>
+                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-text-secondary">{t("offerModal.first_name_label")}</span>
                 <input
                   name="first_name"
                   autoComplete="given-name"
                   required
-                  placeholder="Votre prénom"
+                  placeholder={t("offerModal.first_name_placeholder")}
                   className="w-full rounded-xl border-[1.5px] border-border-medium bg-[oklch(95%_0.03_295)] px-4 py-3 text-[15px] text-text-dark outline-none transition focus:border-primary"
                 />
               </label>
               <label>
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-text-secondary">Nom</span>
+                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.07em] text-text-secondary">{t("offerModal.last_name_label")}</span>
                 <input
                   name="last_name"
                   autoComplete="family-name"
                   required
-                  placeholder="Votre nom"
+                  placeholder={t("offerModal.last_name_placeholder")}
                   className="w-full rounded-xl border-[1.5px] border-border-medium bg-[oklch(95%_0.03_295)] px-4 py-3 text-[15px] text-text-dark outline-none transition focus:border-primary"
                 />
               </label>
@@ -93,14 +95,14 @@ export function OfferModal({ item, onClose, onReserve }: Props) {
                   onClick={onClose}
                   className="flex-1 rounded-xl border-[1.5px] border-border-medium bg-white p-3 text-sm font-semibold text-text-secondary"
                 >
-                  Annuler
+                  {t("common.cancel")}
                 </button>
                 <button
                   type="submit"
                   disabled={busy}
                   className="flex-[2] rounded-xl border-0 bg-gradient-to-br from-primary to-primary-dark p-3 text-sm font-bold text-white shadow-md disabled:opacity-70"
                 >
-                  {busy ? "Réservation..." : "Je l'offre !"}
+                  {busy ? t("offerModal.submit_busy") : t("offerModal.submit_idle")}
                 </button>
               </div>
             </form>

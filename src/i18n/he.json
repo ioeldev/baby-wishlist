@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "טוען...",
+    "cancel": "ביטול",
+    "save_idle": "שמירה",
+    "save_busy": "שומר...",
+    "add_idle": "הוספה",
+    "add_busy": "מוסיף...",
+    "delete": "מחיקה",
+    "edit": "עריכה"
+  },
+  "progressBar": {
+    "reserved_count": "{{reserved}}/{{total}} הוזמנו"
+  },
+  "languageSelector": {
+    "label": "שפה"
+  },
+  "publicHero": {
+    "kicker": "תינוק בדרך",
+    "title": "רשימת המתנות שלנו",
+    "description": "בחרו מתנה לתינוק הקטן שלנו שבקרוב יגיע."
+  },
+  "publicWishlist": {
+    "filter_all": "הכל",
+    "filter_available": "פנויים",
+    "filter_reserved": "הוזמנו",
+    "all_label": "הכל",
+    "empty_message": "אין פריטים כאן.",
+    "footer_message": "תודה על האהבה והמתנות"
+  },
+  "adminWishlist": {
+    "kicker": "אזור ניהול",
+    "title": "Baby Wishlist",
+    "description": "נהלו את הרשימה, הקישורים, הקטגוריות וההזמנות במקום אחד.",
+    "filter_all": "הכל",
+    "filter_available": "פנויים",
+    "filter_reserved": "הוזמנו",
+    "all_label": "הכל",
+    "categories_button": "קטגוריות",
+    "add_button": "הוספה",
+    "token_label": "טוקן מנהל",
+    "enter_button": "כניסה",
+    "empty_message": "אין פריטים לפילטר זה.",
+    "footer_message": "ניהול רשימת הלידה",
+    "confirm_delete_item": "למחוק את \"{{name}}\"?",
+    "confirm_clear_reservation": "לשחרר את ההזמנה של \"{{name}}\"?",
+    "error_preview": "לא ניתן לטעון תצוגה מקדימה"
+  },
+  "itemCard": {
+    "reserved_badge": "הוזמן",
+    "open_link_label": "פתח קישור",
+    "delete_link_label": "מחק קישור",
+    "link_button": "קישור",
+    "edit_button": "עריכה",
+    "release_button": "שחרור",
+    "delete_button": "מחיקה",
+    "offer_button": "הזמינו",
+    "already_reserved": "כבר הוזמן",
+    "product_photo": "תמונת מוצר"
+  },
+  "offerModal": {
+    "title": "הזמינו את המתנה",
+    "first_name_label": "שם פרטי",
+    "first_name_placeholder": "השם הפרטי שלכם",
+    "last_name_label": "שם משפחה",
+    "last_name_placeholder": "שם המשפחה שלכם",
+    "submit_idle": "אני מזמין!",
+    "submit_busy": "מזמין...",
+    "success_title": "תודה!",
+    "success_message": "המתנה שלכם הוזמנה עם אהבה.",
+    "error_required": "שם פרטי ושם משפחה הם שדות חובה",
+    "error_reserve": "לא ניתן להזמין את הפריט"
+  },
+  "addItemModal": {
+    "title_add": "הוספת פריט",
+    "title_edit": "עריכת פריט",
+    "name_label": "שם",
+    "note_label": "הערה",
+    "category_label": "קטגוריה",
+    "assigned_to_label": "מיועד ל",
+    "price_label": "מחיר משוער",
+    "save_idle": "שמירה",
+    "save_busy": "שומר...",
+    "error_name_required": "שם הוא שדה חובה",
+    "error_invalid_form": "טופס לא תקין",
+    "error_save": "לא ניתן לשמור"
+  },
+  "categoryModal": {
+    "title": "ניהול קטגוריות",
+    "new_category": "קטגוריה חדשה",
+    "placeholder": "לדוג׳: טיולים ויציאות",
+    "reserved_count": "{{reserved}}/{{total}} פריטים הוזמנו",
+    "name_label": "שם",
+    "order_label": "סדר",
+    "save_button": "שמירה",
+    "confirm_delete": "למחוק את \"{{name}}\" ואת {{count}} הפריטים שלה?",
+    "error_name_required": "שם הקטגוריה הוא שדה חובה",
+    "error_add": "לא ניתן להוסיף את הקטגוריה",
+    "error_update": "לא ניתן לעדכן את הקטגוריה",
+    "error_delete": "לא ניתן למחוק את הקטגוריה"
+  },
+  "linkModal": {
+    "title": "הוספת קישור",
+    "preview_label": "תצוגה מקדימה",
+    "loading": "טוען תצוגה מקדימה...",
+    "error_preview": "לא ניתן לטעון תצוגה מקדימה"
+  },
+  "itemDetail": {
+    "nav_list": "רשימה",
+    "nav_item": "כרטיס",
+    "breadcrumb_label": "נתיב ניווט",
+    "reserved_badge": "הוזמן",
+    "where_to_buy": "איפה לקנות",
+    "verified_links": "קישורים שנבדקו על ידי ההורים — פתחו אותם לפרטים, מידות, צבעים וכו׳.",
+    "open_link": "פתח קישור",
+    "see_offer": "ראה מבצע",
+    "no_links": "אין קישורים לחנויות כרגע — חזרו מאוחר יותר.",
+    "offer_button": "הזמינו את המתנה",
+    "already_reserved": "המתנה הזו כבר נבחרה. תודה על הנדיבות!",
+    "not_found_title": "פריט לא נמצא",
+    "not_found_description": "המתנה הזו לא קיימת או שכבר הוסרה מהרשימה.",
+    "back_to_list": "חזרה לרשימה",
+    "product_photo": "תמונת מוצר",
+    "footer_message": "תודה על האהבה והמתנות"
+  },
+  "categorySection": {
+    "reserved_percent": "{{reserved}}/{{total}} הוזמנו · {{percent}}%"
+  }
+}

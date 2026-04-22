@@ -1,6 +1,7 @@
 import { Search, Upload, X } from "lucide-react";
 import { type FormEvent, useRef, useState } from "react";
 import type { Item, LinkPreview } from "../types";
+import { useTranslation } from "../i18n";
 import { WISHLIST_FORM_FIELD, WISHLIST_FORM_LABEL } from "./wishlist";
 import { Button, Field, Modal, Notice, TextInput } from "./ui";
 
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export function LinkModal({ item, preview, loading, error, onPreview, onSave, onClose }: Props) {
+  const { t } = useTranslation();
   const [url, setUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [fallbackFile, setFallbackFile] = useState<File | null>(null);
@@ -83,7 +85,7 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
   }
 
   return (
-    <Modal title="Ajouter un lien" maxWidth="xl" onClose={onClose}>
+    <Modal title={t("linkModal.title")} maxWidth="xl" onClose={onClose}>
       <div className="grid gap-4">
         <p className="text-[15px] text-text-secondary">{item.name}</p>
         <form onSubmit={event => void handlePreview(event)} className="grid gap-2">
@@ -95,7 +97,7 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
                 placeholder="https://..."
                 className={`min-w-0 flex-1 ${WISHLIST_FORM_FIELD}`}
               />
-              <Button type="submit" variant="wishlistPrimary" size="icon" disabled={loading} aria-label="Prévisualiser" className="h-[42px] w-[42px] shrink-0 sm:h-[44px] sm:w-[44px]">
+              <Button type="submit" variant="wishlistPrimary" size="icon" disabled={loading} aria-label={t("linkModal.preview_label")} className="h-[42px] w-[42px] shrink-0 sm:h-[44px] sm:w-[44px]">
                 <Search className="h-4 w-4" />
               </Button>
             </div>
@@ -149,7 +151,7 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
             {error}
           </Notice>
         ) : null}
-        {loading ? <p className="text-sm text-text-secondary">Chargement de la prévisualisation...</p> : null}
+        {loading ? <p className="text-sm text-text-secondary">{t("linkModal.loading")}</p> : null}
         {preview ? (
           <div className="rounded-xl border-[1.5px] border-border bg-bg-white p-3 sm:p-4">
             {preview.image ? <img src={preview.image} alt="" className="mb-3 aspect-video w-full rounded-lg object-cover" /> : null}
@@ -160,10 +162,10 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
         ) : null}
         <div className="flex flex-wrap justify-end gap-2 border-t border-border pt-4">
           <Button type="button" variant="wishlistSecondary" onClick={onClose}>
-            Annuler
+            {t("common.cancel")}
           </Button>
           <Button type="button" variant="wishlistPrimary" onClick={() => void handleSave()} disabled={!preview || saving}>
-            {saving ? "Ajout..." : "Ajouter"}
+            {saving ? t("common.add_busy") : t("common.add_idle")}
           </Button>
         </div>
       </div>

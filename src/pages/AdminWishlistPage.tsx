@@ -28,25 +28,13 @@ import {
     useUpdateItem,
     useWishlist,
 } from "../hooks/useWishlist";
+import { useTranslation } from "../i18n";
 import type { Item, LinkPreview, NewItemInput } from "../types";
 
 type AdminFilter = "all" | "unchecked" | "checked";
 
-const filterOptions: Array<{ id: AdminFilter; label: string }> = [
-    { id: "all", label: "Tout" },
-    { id: "unchecked", label: "Disponibles" },
-    { id: "checked", label: "Réservés" },
-];
-
-function adminItemFilter(filter: AdminFilter) {
-    return (item: { is_reserved: boolean }) => {
-        if (filter === "unchecked") return !item.is_reserved;
-        if (filter === "checked") return item.is_reserved;
-        return true;
-    };
-}
-
 export function AdminWishlistPage() {
+    const { t } = useTranslation();
     const [adminToken, setAdminToken] = useState(() => localStorage.getItem("adminToken") ?? "");
     const wishlist = useWishlist(true, Boolean(adminToken));
     const createCategory = useCreateCategory();
@@ -59,6 +47,20 @@ export function AdminWishlistPage() {
     const addItemLink = useAddItemLink();
     const deleteItemLink = useDeleteItemLink();
     const clearReservation = useClearReservation();
+
+    const filterOptions: Array<{ id: AdminFilter; label: string }> = [
+        { id: "all", label: t("adminWishlist.filter_all") },
+        { id: "unchecked", label: t("adminWishlist.filter_available") },
+        { id: "checked", label: t("adminWishlist.filter_reserved") },
+    ];
+
+    function adminItemFilter(filter: AdminFilter) {
+        return (item: { is_reserved: boolean }) => {
+            if (filter === "unchecked") return !item.is_reserved;
+            if (filter === "checked") return item.is_reserved;
+            return true;
+        };
+    }
 
     const [filter, setFilter] = useState<AdminFilter>("all");
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | "all">("all");
@@ -95,7 +97,7 @@ export function AdminWishlistPage() {
             const result = await previewLink.mutateAsync(url);
             setPreview(result);
         } catch (err) {
-            setPreviewError(err instanceof Error ? err.message : "Prévisualisation impossible");
+            setPreviewError(err instanceof Error ? err.message : t("adminWishlist.error_preview"));
         }
     }
 
@@ -145,8 +147,9 @@ export function AdminWishlistPage() {
         <WishlistPageShell>
             <ProgressBar categories={categories} />
             <WishlistAdminHero
-                title="Baby Wishlist"
-                description="Gérez la liste, les liens, les catégories et les réservations en un seul endroit."
+                title={t("adminWishlist.title")}
+                description={t("adminWishlist.description")}
+                kicker={t("adminWishlist.kicker")}
                 actions={
                     adminToken ? (
                         <>
@@ -156,7 +159,7 @@ export function AdminWishlistPage() {
                                 className="min-w-[120px] px-5 py-3"
                                 icon={<FolderCog className="h-5 w-5" aria-hidden="true" />}
                             >
-                                Catégories
+                                {t("adminWishlist.categories_button")}
                             </Button>
                             <Button
                                 onClick={() => setItemModalOpen(true)}
@@ -164,7 +167,7 @@ export function AdminWishlistPage() {
                                 className="min-w-[120px] px-5 py-3"
                                 icon={<Plus className="h-5 w-5" aria-hidden="true" />}
                             >
-                                Ajouter
+                                {t("adminWishlist.add_button")}
                             </Button>
                         </>
                     ) : null
@@ -177,7 +180,7 @@ export function AdminWishlistPage() {
                         onSubmit={handleAdminLogin}
                         className="my-8 grid gap-4 rounded-[20px] border-[1.5px] border-[oklch(92%_0.07_295)] bg-white/95 p-6 shadow-[0_2px_12px_oklch(55%_0.10_295_/_0.08)] sm:grid-cols-[1fr_auto] sm:items-end"
                     >
-                        <Field label="Token admin" className="text-sm font-semibold text-[oklch(38%_0.18_295)]">
+                        <Field label={t("adminWishlist.token_label")} className="text-sm font-semibold text-[oklch(38%_0.18_295)]">
                             <TextInput
                                 name="admin_token"
                                 type="password"
@@ -191,13 +194,13 @@ export function AdminWishlistPage() {
                             variant="wishlistPrimary"
                             className="h-[46px] min-w-[120px] px-6 sm:h-[46px]"
                         >
-                            Entrer
+                            {t("adminWishlist.enter_button")}
                         </Button>
                     </form>
                 ) : null}
                 {wishlist.isLoading ? (
                     <Notice className="rounded-[14px] border border-[oklch(92%_0.07_295)] bg-white/90 p-6 text-center text-[oklch(45%_0.10_295)]">
-                        Chargement...
+                        {t("common.loading")}
                     </Notice>
                 ) : null}
                 {wishlist.error ? (
@@ -208,7 +211,7 @@ export function AdminWishlistPage() {
                 {adminToken && categories.length > 0 ? (
                     <WishlistStickyCategoryNav
                         categories={categories}
-                        allLabel="Tout"
+                        allLabel={t("adminWishlist.all_label")}
                         selectedCategoryId={effectiveCategoryId}
                         onSelectCategory={setSelectedCategoryId}
                         filterOptions={filterOptions}
@@ -217,7 +220,7 @@ export function AdminWishlistPage() {
                     />
                 ) : null}
                 {adminToken && !wishlist.isLoading && filtered.length === 0 ? (
-                    <WishlistEmptyState message="Aucun article pour ce filtre." />
+                    <WishlistEmptyState message={t("adminWishlist.empty_message")} />
                 ) : null}
                 {filtered.map((category) => (
                     <CategorySection
@@ -227,13 +230,13 @@ export function AdminWishlistPage() {
                         onAddLink={setLinkItem}
                         onEdit={openEdit}
                         onDelete={(item) => {
-                            if (confirm(`Supprimer "${item.name}" ?`)) {
+                            if (confirm(t("adminWishlist.confirm_delete_item", { name: item.name }))) {
                                 deleteItem.mutate(item.id);
                             }
                         }}
                         onDeleteLink={(id) => deleteItemLink.mutate(id)}
                         onClearReservation={(item) => {
-                            if (confirm(`Libérer la réservation de "${item.name}" ?`)) {
+                            if (confirm(t("adminWishlist.confirm_clear_reservation", { name: item.name }))) {
                                 clearReservation.mutate(item.id);
                             }
                         }}
@@ -241,7 +244,7 @@ export function AdminWishlistPage() {
                 ))}
             </main>
 
-            <WishlistPageFooter message="Administration de la liste de naissance" />
+            <WishlistPageFooter message={t("adminWishlist.footer_message")} />
 
             <AddItemModal
                 open={itemModalOpen}
