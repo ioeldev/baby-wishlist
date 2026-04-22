@@ -43,11 +43,11 @@ export function Modal({ title, maxWidth = "lg", children, onClose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className={`relative z-10 flex max-h-[min(90dvh,56rem)] w-full ${widths[maxWidth]} flex-col overflow-hidden rounded-[20px] border-[1.5px] border-[oklch(92%_0.07_295)] bg-white shadow-[0_20px_50px_oklch(22%_0.10_295_/_0.2)]`}
+        className={`relative z-10 flex max-h-[min(90dvh,56rem)] w-full ${widths[maxWidth]} flex-col overflow-hidden rounded-3xl border-[1.5px] border-border bg-white shadow-xl`}
         onClick={event => event.stopPropagation()}
       >
-        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[oklch(92%_0.07_295)] bg-[oklch(99.2%_0.015_295)] px-5 py-4 sm:px-6">
-          <h2 id="modal-title" className="min-w-0 font-['Cormorant_Garamond'] text-2xl font-medium leading-tight text-[oklch(38%_0.18_295)]">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-bg-white px-5 py-4 sm:px-6">
+          <h2 id="modal-title" className="min-w-0 font-heading text-2xl font-medium leading-tight text-text-primary">
             {title}
           </h2>
           <Button
@@ -55,7 +55,7 @@ export function Modal({ title, maxWidth = "lg", children, onClose }: Props) {
             variant="ghost"
             onClick={onClose}
             aria-label="Fermer"
-            className="h-9 w-9 shrink-0 text-[oklch(48%_0.10_295)] hover:bg-[oklch(96%_0.04_295)]"
+            className="h-9 w-9 shrink-0 text-text-secondary hover:bg-bg-lighter"
           >
             <X className="h-5 w-5" />
           </Button>

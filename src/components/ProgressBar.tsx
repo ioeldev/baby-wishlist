@@ -16,14 +16,14 @@ export function ProgressBar({ categories, variant = "admin" }: Props) {
 
   return (
     <div className="relative z-10">
-      <div className="bg-[oklch(92%_0.07_295)] text-[oklch(38%_0.18_295)]">
+      <div className="bg-primary-light text-text-primary">
         <div className="mx-auto flex max-w-[1140px] items-center gap-3 px-6 py-2.5">
           <span className="shrink-0 whitespace-nowrap text-xs font-semibold">
             {reserved}/{total} réservés
           </span>
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[oklch(80%_0.12_295)]">
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-border-medium">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-[oklch(68%_0.16_295)] to-[oklch(52%_0.20_295)] transition-all duration-700"
+              className="h-full rounded-full bg-gradient-to-r from-primary to-primary-dark transition-all duration-700"
               style={{ width: `${percent}%` }}
             />
           </div>
@@ -31,7 +31,7 @@ export function ProgressBar({ categories, variant = "admin" }: Props) {
         </div>
         {variant === "admin" ? (
           <div className="border-t border-[oklch(86%_0.09_295)] bg-[oklch(94%_0.06_295_/_0.88)]">
-            <div className="mx-auto flex max-w-[1140px] flex-wrap items-center justify-end gap-2 px-6 py-2 text-[13px] text-[oklch(45%_0.10_295)]">
+            <div className="mx-auto flex max-w-[1140px] flex-wrap items-center justify-end gap-2 px-6 py-2 text-[13px] text-text-secondary">
               <span className="inline-flex items-center gap-1.5 font-medium">
                 <Euro className="h-3.5 w-3.5 text-[oklch(58%_0.12_295)]" aria-hidden="true" />
                 {reservedBudget.toFixed(0)} / {estimated.toFixed(0)} €
