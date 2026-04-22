@@ -26,67 +26,57 @@ if (!S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY) {
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-
-function validateFileUpload(mimetype: string, size: number): string | null {
-  if (!ALLOWED_MIME_TYPES.includes(mimetype)) {
-    return `Invalid file type. Allowed types: ${ALLOWED_MIME_TYPES.join(", ")}`;
-  }
-  if (size > MAX_FILE_SIZE) {
-    return `File is too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB`;
-  }
-  return null;
-}
+const PRESIGN_EXPIRES_IN = 15 * 60; // 15 minutes
 
 export async function uploadRoutes(app: FastifyInstance) {
   app.post<{ Params: { itemId: number } }>(
-    "/items/:itemId/upload-fallback",
+    "/items/:itemId/upload-fallback/presign",
     async (request, reply) => {
       if (!requireAdmin(request, reply)) return;
 
-      const params = z.object({ itemId: z.coerce.number().int().positive() }).parse(request.params);
+      const params = z
+        .object({ itemId: z.coerce.number().int().positive() })
+        .parse(request.params);
 
-      // Verify item exists
+      const body = z
+        .object({
+          contentType: z.string(),
+          contentLength: z.number().int().positive(),
+          filename: z.string().min(1),
+        })
+        .parse(request.body);
+
+      if (!ALLOWED_MIME_TYPES.includes(body.contentType)) {
+        return reply.code(400).send({
+          message: `Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(", ")}`,
+        });
+      }
+
+      if (body.contentLength > MAX_FILE_SIZE) {
+        return reply.code(400).send({
+          message: `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB`,
+        });
+      }
+
       const item = db.query("SELECT id FROM items WHERE id = ?").get(params.itemId);
       if (!item) {
         return reply.code(404).send({ message: "Item not found" });
       }
 
-      const data = await request.file();
-      if (!data) {
-        return reply.code(400).send({ message: "No file provided" });
-      }
+      const ext = body.filename.split(".").pop() ?? "bin";
+      const key = `fallback-${params.itemId}-${Date.now()}.${ext}`;
 
-      const buffer = await data.toBuffer();
+      const uploadUrl = s3.presign(key, {
+        method: "PUT",
+        type: body.contentType,
+        acl: "public-read",
+        expiresIn: PRESIGN_EXPIRES_IN,
+      });
 
-      // Validate file
-      const validationError = validateFileUpload(data.mimetype, buffer.length);
-      if (validationError) {
-        return reply.code(400).send({ message: validationError });
-      }
+      const publicBaseUrl = (S3_PUBLIC_BASE_URL || S3_ENDPOINT!).replace(/\/$/, "");
+      const publicUrl = `${publicBaseUrl}/${S3_BUCKET}/${key}`;
 
-      const fileName = `fallback-${params.itemId}-${Date.now()}-${data.filename}`;
-
-      try {
-        const s3file = s3.file(fileName);
-        await s3file.write(buffer, { type: data.mimetype, acl: "public-read" });
-
-        const publicBaseUrl = S3_PUBLIC_BASE_URL || S3_ENDPOINT;
-        const fileUrl = `${publicBaseUrl}/${S3_BUCKET}/${fileName}`;
-
-        // Update item with fallback image URL
-        db.query(`
-          UPDATE items
-          SET fallback_image = ?, updated_at = CURRENT_TIMESTAMP
-          WHERE id = ?
-        `).run(fileUrl, params.itemId);
-
-        return { url: fileUrl };
-      } catch (error) {
-        console.error("S3 upload error:", error);
-        return reply
-          .code(500)
-          .send({ message: "Failed to upload file to S3" });
-      }
+      return { uploadUrl, publicUrl };
     }
   );
 }

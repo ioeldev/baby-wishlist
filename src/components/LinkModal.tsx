@@ -41,23 +41,43 @@ export function LinkModal({ item, preview, loading, error, onPreview, onSave, on
     setFallbackError(null);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch(`/api/items/${item.id}/upload-fallback`, {
+      // Step 1: request a presigned PUT URL from our server
+      const presignRes = await fetch(`/api/items/${item.id}/upload-fallback/presign`, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           "x-admin-token": localStorage.getItem("adminToken") ?? "",
         },
-        body: formData,
+        body: JSON.stringify({
+          contentType: file.type,
+          contentLength: file.size,
+          filename: file.name,
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error("Erreur lors de l'upload du fichier");
+      if (!presignRes.ok) {
+        const err = (await presignRes.json()) as { message?: string };
+        throw new Error(err.message ?? "Erreur lors de la préparation de l'upload");
       }
 
-      const result = (await response.json()) as { url: string };
-      setFallbackImageUrl(result.url);
+      const { uploadUrl, publicUrl } = (await presignRes.json()) as {
+        uploadUrl: string;
+        publicUrl: string;
+      };
+
+      // Step 2: upload the file directly to S3 using the presigned PUT URL
+      const uploadRes = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error("Erreur lors de l'upload vers le stockage");
+      }
+
+      // Step 3: store the permanent public URL (ACL public-read, no signing needed)
+      setFallbackImageUrl(publicUrl);
       setFallbackFile(file);
     } catch (err) {
       setFallbackError(err instanceof Error ? err.message : "Erreur lors de l'upload");

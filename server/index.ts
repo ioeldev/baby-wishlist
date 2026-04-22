@@ -1,6 +1,5 @@
 import { serve } from "bun";
 import fastify from "fastify";
-import multipart from "@fastify/multipart";
 import dotenv from "dotenv";
 import path from "node:path";
 dotenv.config();
@@ -18,8 +17,6 @@ const port = Number(process.env.PORT ?? 3001);
 const production = process.env.NODE_ENV === "production";
 const distDir = path.join(process.cwd(), "dist");
 const devIndex = production ? null : (await import("../src/index.html")).default;
-
-await api.register(multipart);
 
 await api.register(
     async (app) => {
