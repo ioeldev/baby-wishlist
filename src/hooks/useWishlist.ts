@@ -205,6 +205,22 @@ export function useAddItemLink() {
   });
 }
 
+export function useUpdateItemFallbackImage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, fallback_image }: { id: number; fallback_image: string | null }) =>
+      api<Item>(`/api/items/${id}/fallback-image`, {
+        method: "PATCH",
+        admin: true,
+        body: JSON.stringify({ fallback_image }),
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    },
+  });
+}
+
 export function useDeleteItemLink() {
   const queryClient = useQueryClient();
 

@@ -26,6 +26,7 @@ import {
     usePreviewLink,
     useUpdateCategory,
     useUpdateItem,
+    useUpdateItemFallbackImage,
     useWishlist,
 } from "../hooks/useWishlist";
 import { useLocalizeItem, useTranslation } from "../i18n";
@@ -46,6 +47,7 @@ export function AdminWishlistPage() {
     const deleteItem = useDeleteItem();
     const previewLink = usePreviewLink();
     const addItemLink = useAddItemLink();
+    const updateFallbackImage = useUpdateItemFallbackImage();
     const deleteItemLink = useDeleteItemLink();
     const clearReservation = useClearReservation();
 
@@ -104,8 +106,6 @@ export function AdminWishlistPage() {
 
     async function handleSaveLink(linkPreview: LinkPreview, fallbackImageUrl?: string) {
         if (!linkItem) return;
-        // Note: fallbackImageUrl is handled by the upload endpoint and auto-saved to DB,
-        // so we only need to save the link here
         await addItemLink.mutateAsync({
             itemId: linkItem.id,
             input: {
@@ -116,6 +116,12 @@ export function AdminWishlistPage() {
                 price: linkPreview.price,
             },
         });
+        if (fallbackImageUrl) {
+            await updateFallbackImage.mutateAsync({
+                id: linkItem.id,
+                fallback_image: fallbackImageUrl,
+            });
+        }
         setPreview(null);
         setLinkItem(null);
     }
