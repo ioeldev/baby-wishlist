@@ -6,8 +6,8 @@ import { db } from "../db";
 
 const {
   MINIO_PUBLIC_ENDPOINT,
-  MINIO_ROOT_USER,
-  MINIO_ROOT_PASSWORD,
+  MINIO_ACCESS_KEY,
+  MINIO_SECRET_KEY,
   MINIO_BUCKET,
 } = process.env;
 
@@ -17,16 +17,16 @@ if (!MINIO_PUBLIC_ENDPOINT || !MINIO_BUCKET) {
   );
 }
 
-if (!MINIO_ROOT_USER || !MINIO_ROOT_PASSWORD) {
+if (!MINIO_ACCESS_KEY || !MINIO_SECRET_KEY) {
   throw new Error(
-    "MINIO_ROOT_USER and MINIO_ROOT_PASSWORD environment variables are required"
+    "MINIO_ACCESS_KEY and MINIO_SECRET_KEY environment variables are required"
   );
 }
 
 const s3 = new S3Client({
   endpoint: MINIO_PUBLIC_ENDPOINT,
-  accessKeyId: MINIO_ROOT_USER,
-  secretAccessKey: MINIO_ROOT_PASSWORD,
+  accessKeyId: MINIO_ACCESS_KEY,
+  secretAccessKey: MINIO_SECRET_KEY,
   bucket: MINIO_BUCKET,
   region: "us-east-1",
 });
