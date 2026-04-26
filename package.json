@@ -9,7 +9,7 @@
         "start": "NODE_ENV=production bun server/index.ts",
         "seed": "bun server/seed.ts",
         "typecheck": "tsc --noEmit",
-        "postinstall": "[ ! -f data/wishlist.db ] && bun run seed || echo 'Database already exists, skipping seed'"
+        "postinstall": "[ \"$SKIP_APP_POSTINSTALL\" = \"1\" ] && echo 'Skipping app postinstall' || ([ ! -f data/wishlist.db ] && bun run seed || echo 'Database already exists, skipping seed')"
     },
     "dependencies": {
         "@fastify/multipart": "^10.0.0",

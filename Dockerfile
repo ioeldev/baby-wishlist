@@ -1,7 +1,7 @@
 FROM oven/bun:1 AS install
 WORKDIR /app
 COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile --ignore-scripts
+RUN SKIP_APP_POSTINSTALL=1 bun install --frozen-lockfile
 
 FROM oven/bun:1 AS build
 WORKDIR /app
