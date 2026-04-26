@@ -9,6 +9,7 @@ import { categoryRoutes } from "./routes/categories";
 import { itemRoutes } from "./routes/items";
 import { previewRoutes } from "./routes/preview";
 import { uploadRoutes } from "./routes/upload";
+import { exportRoutes } from "./routes/export";
 migrate();
 seedIfEmpty();
 
@@ -24,6 +25,7 @@ await api.register(
         await app.register(itemRoutes);
         await app.register(previewRoutes);
         await app.register(uploadRoutes);
+        await app.register(exportRoutes);
     },
     { prefix: "/api" }
 );
@@ -45,7 +47,10 @@ async function handleApiRequest(request: Request) {
         payload: body,
     });
 
-    return new Response(response.body, {
+    const injectedResponse = response as typeof response & { rawPayload?: BodyInit };
+    const responseBody = injectedResponse.rawPayload ?? response.body;
+
+    return new Response(responseBody, {
         status: response.statusCode,
         headers: response.headers as HeadersInit,
     });

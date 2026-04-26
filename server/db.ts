@@ -5,7 +5,8 @@ import path from "node:path";
 const dataDir = path.join(process.cwd(), "data");
 mkdirSync(dataDir, { recursive: true });
 
-export const db = new Database(path.join(dataDir, "wishlist.db"));
+const dbPath = path.join(dataDir, "wishlist.db");
+export const db = new Database(dbPath);
 db.exec("PRAGMA foreign_keys = ON");
 
 export function migrate() {
