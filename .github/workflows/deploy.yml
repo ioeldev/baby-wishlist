@@ -49,7 +49,7 @@ jobs:
       - name: Sync code to deploy directory
         run: |
           mkdir -p "$DEPLOY_PATH"
-          rsync -a --delete --exclude ".git/" "$GITHUB_WORKSPACE"/ "$DEPLOY_PATH"/
+          rsync -a --delete --exclude ".git/" --exclude "data/" "$GITHUB_WORKSPACE"/ "$DEPLOY_PATH"/
 
       - name: Write production environment
         run: printf '%s\n' "${{ secrets.ENV }}" > "$DEPLOY_PATH/.env"
