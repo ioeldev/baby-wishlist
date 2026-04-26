@@ -41,7 +41,7 @@ export function CategorySection(props: Props) {
           </div>
           <div className="h-px flex-1 bg-gradient-to-l from-border-medium to-transparent" />
         </div>
-        <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           {category.items.map(item => (
             <ItemCard key={item.id} item={item} {...props} />
           ))}
@@ -73,7 +73,7 @@ export function CategorySection(props: Props) {
         <div className="h-px min-w-[12px] flex-1 bg-gradient-to-l from-border-medium to-transparent" />
       </div>
       {open ? (
-        <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           {category.items.map(item => (
             <ItemCard key={item.id} item={item} {...props} />
           ))}
