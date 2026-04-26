@@ -1,6 +1,6 @@
 # VPS Deployment
 
-This setup runs the Bun app, SQLite database volume, and MinIO on one VPS. It expects your existing Traefik container to handle HTTPS.
+This setup runs the Bun app, SQLite database bind mount, and MinIO on one VPS. It expects your existing Traefik container to handle HTTPS.
 
 ## 1. Prepare DNS
 
@@ -44,17 +44,17 @@ Open `https://${MINIO_CONSOLE_HOST}` with `MINIO_ROOT_USER` and `MINIO_ROOT_PASS
 
 ## 4. Restore the SQLite database
 
-Start the app once so Docker creates the `app_data` volume, then stop it before copying the Railway database file:
+Copy the Railway database file into the stable deploy directory before or after deployment:
 
 ```sh
 cd /home/seed/babywishlist
-docker compose up -d app
+mkdir -p data
 docker compose stop app
-docker compose cp ./wishlist.db app:/app/data/wishlist.db
+cp /path/to/wishlist.db ./data/wishlist.db
 docker compose up -d app
 ```
 
-The app stores production data at `/app/data/wishlist.db`, backed by the `app_data` Docker volume.
+The app stores production data at `/app/data/wishlist.db`, backed by `/home/seed/babywishlist/data/wishlist.db` on the VPS.
 
 ## 5. Verify
 
