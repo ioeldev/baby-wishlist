@@ -23,7 +23,7 @@ Use strong values for:
 
 - `ADMIN_TOKEN`
 - `MINIO_ROOT_PASSWORD`
-- `MINIO_SECRET_KEY`
+- `MINIO_SECRET_KEY`, at least 8 characters
 
 ## 3. Start infrastructure
 

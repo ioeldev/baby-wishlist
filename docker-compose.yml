@@ -37,12 +37,14 @@ services:
     entrypoint: >
       /bin/sh -c "
       until mc alias set local http://minio:9000 \"$${MINIO_ROOT_USER}\" \"$${MINIO_ROOT_PASSWORD}\"; do sleep 2; done;
+      if [ $${#MINIO_ACCESS_KEY} -lt 3 ]; then echo 'MINIO_ACCESS_KEY must be at least 3 characters'; exit 1; fi;
+      if [ $${#MINIO_SECRET_KEY} -lt 8 ]; then echo 'MINIO_SECRET_KEY must be at least 8 characters'; exit 1; fi;
       mc mb --ignore-existing \"local/$${MINIO_BUCKET}\";
       mc anonymous set download \"local/$${MINIO_BUCKET}\";
       mc admin user add local \"$${MINIO_ACCESS_KEY}\" \"$${MINIO_SECRET_KEY}\" || true;
       mc admin policy attach local readwrite --user \"$${MINIO_ACCESS_KEY}\";
-      printf '[{\"AllowedOrigins\":[\"%s\"],\"AllowedMethods\":[\"GET\",\"PUT\",\"HEAD\"],\"AllowedHeaders\":[\"*\"],\"ExposeHeaders\":[\"ETag\"],\"MaxAgeSeconds\":3000}]' \"$${APP_ORIGIN}\" > /tmp/cors.json;
-      mc cors set \"local/$${MINIO_BUCKET}\" /tmp/cors.json;
+      printf '<CORSConfiguration><CORSRule><AllowedOrigin>%s</AllowedOrigin><AllowedMethod>GET</AllowedMethod><AllowedMethod>PUT</AllowedMethod><AllowedMethod>HEAD</AllowedMethod><AllowedHeader>*</AllowedHeader><ExposeHeader>ETag</ExposeHeader><MaxAgeSeconds>3000</MaxAgeSeconds></CORSRule></CORSConfiguration>' \"$${APP_ORIGIN}\" > /tmp/cors.xml;
+      mc cors set \"local/$${MINIO_BUCKET}\" /tmp/cors.xml;
       "
 
   app:
