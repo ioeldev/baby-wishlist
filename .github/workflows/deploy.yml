@@ -64,11 +64,15 @@ jobs:
 
       - name: Start infrastructure
         working-directory: ${{ env.DEPLOY_PATH }}
-        run: docker compose up -d minio minio-init
+        run: docker compose up -d minio
 
       - name: Deploy app
         working-directory: ${{ env.DEPLOY_PATH }}
         run: docker compose up -d app
+
+      - name: Configure MinIO
+        working-directory: ${{ env.DEPLOY_PATH }}
+        run: docker compose run --rm minio-init
 
       - name: Show service status
         working-directory: ${{ env.DEPLOY_PATH }}

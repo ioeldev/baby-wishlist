@@ -28,7 +28,8 @@ Use strong values for:
 ## 3. Start infrastructure
 
 ```sh
-docker compose up -d minio minio-init
+docker compose up -d minio
+docker compose run --rm minio-init
 ```
 
 This starts MinIO, creates the bucket, enables public reads for uploaded images, applies CORS, and creates the app MinIO user. HTTPS routing is handled by your existing Traefik container through Docker labels.

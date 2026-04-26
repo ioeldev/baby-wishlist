@@ -64,8 +64,7 @@ services:
       - app_internal
       - traefik_proxy
     depends_on:
-      minio-init:
-        condition: service_completed_successfully
+      - minio
     labels:
       - traefik.enable=true
       - traefik.docker.network=${TRAEFIK_NETWORK}
