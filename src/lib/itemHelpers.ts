@@ -1,7 +1,7 @@
 import type { CategoryWithItems, Item } from "../types";
 
 export function getPrimaryItemImageUrl(item: Item) {
-  return item.links.find(link => link.image)?.image ?? null;
+  return item.fallback_image ?? item.links.find(link => link.image)?.image ?? null;
 }
 
 export function findItemInWishlist(

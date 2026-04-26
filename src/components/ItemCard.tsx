@@ -14,6 +14,7 @@ type Props = {
     onEdit?: (item: Item) => void;
     onDelete?: (item: Item) => void;
     onDeleteLink?: (id: number) => void;
+    onDeleteFallbackImage?: (item: Item) => void;
     onClearReservation?: (item: Item) => void;
 };
 
@@ -25,6 +26,7 @@ export function ItemCard({
     onEdit,
     onDelete,
     onDeleteLink,
+    onDeleteFallbackImage,
     onClearReservation,
 }: Props) {
     if (!admin) {
@@ -33,16 +35,17 @@ export function ItemCard({
 
     const reserved = item.is_reserved;
 
-    return <AdminItemCard item={item} reserved={reserved} onAddLink={onAddLink} onEdit={onEdit} onDelete={onDelete} onDeleteLink={onDeleteLink} onClearReservation={onClearReservation} />;
+    return <AdminItemCard item={item} reserved={reserved} onAddLink={onAddLink} onEdit={onEdit} onDelete={onDelete} onDeleteLink={onDeleteLink} onDeleteFallbackImage={onDeleteFallbackImage} onClearReservation={onClearReservation} />;
 }
 
-function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLink, onClearReservation }: {
+function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLink, onDeleteFallbackImage, onClearReservation }: {
     item: Item;
     reserved: boolean;
     onAddLink?: (item: Item) => void;
     onEdit?: (item: Item) => void;
     onDelete?: (item: Item) => void;
     onDeleteLink?: (id: number) => void;
+    onDeleteFallbackImage?: (item: Item) => void;
     onClearReservation?: (item: Item) => void;
 }) {
     const { t } = useTranslation();
@@ -54,7 +57,7 @@ function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLi
                 reserved ? "border-reserved-border bg-[oklch(96%_0.03_295)]" : "border-border bg-white"
             }`}
         >
-            <ItemImage item={item} />
+            <ItemImage item={item} onDeleteFallbackImage={onDeleteFallbackImage} />
             <div className="flex flex-1 flex-col gap-2.5 p-5 pb-4 sm:px-[22px]">
                 <div className="flex items-start justify-between gap-2">
                     <h3
@@ -197,12 +200,12 @@ function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLi
     );
 }
 
-function ItemImage({ item }: { item: Item }) {
+function ItemImage({ item, onDeleteFallbackImage }: { item: Item; onDeleteFallbackImage?: (item: Item) => void }) {
     const { t } = useTranslation();
     const { localName } = useLocalizeItem();
     const [failed, setFailed] = useState(false);
     const scrapedImage = item.links.find((link) => link.image)?.image;
-    const displayImage = scrapedImage && !failed ? scrapedImage : item.fallback_image;
+    const displayImage = item.fallback_image && !failed ? item.fallback_image : scrapedImage;
 
     if (displayImage) {
         return (
@@ -213,6 +216,18 @@ function ItemImage({ item }: { item: Item }) {
                     onError={() => setFailed(true)}
                     className="h-full w-full object-contain p-3 transition duration-300"
                 />
+                {item.fallback_image && onDeleteFallbackImage ? (
+                    <Button
+                        type="button"
+                        variant="wishlistDanger"
+                        size="icon"
+                        onClick={() => onDeleteFallbackImage(item)}
+                        className="absolute right-3 top-3 h-8 w-8 shadow-sm"
+                        aria-label={t("itemCard.delete_fallback_image_label")}
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                ) : null}
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[oklch(97%_0.02_295_/_0.6)]" />
             </div>
         );

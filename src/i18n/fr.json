@@ -43,6 +43,7 @@
     "empty_message": "Aucun article pour ce filtre.",
     "footer_message": "Administration de la liste de naissance",
     "confirm_delete_item": "Supprimer \"{{name}}\" ?",
+    "confirm_delete_fallback_image": "Supprimer l'image importée de \"{{name}}\" ?",
     "confirm_clear_reservation": "Libérer la réservation de \"{{name}}\" ?",
     "error_preview": "Prévisualisation impossible"
   },
@@ -50,6 +51,7 @@
     "reserved_badge": "Réservé",
     "open_link_label": "Ouvrir le lien",
     "delete_link_label": "Supprimer le lien",
+    "delete_fallback_image_label": "Supprimer l'image importée",
     "link_button": "Lien",
     "edit_button": "Modifier",
     "release_button": "Libérer",

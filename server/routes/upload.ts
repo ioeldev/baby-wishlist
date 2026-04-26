@@ -54,6 +54,26 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const PRESIGN_EXPIRES_IN = 15 * 60; // 15 minutes
 
+function getFallbackImageKey(publicUrl: string): string | null {
+  try {
+    const imageUrl = new URL(publicUrl);
+    const endpointUrl = new URL(endpoint);
+
+    if (imageUrl.origin !== endpointUrl.origin) {
+      return null;
+    }
+
+    const pathParts = imageUrl.pathname.split("/").filter(Boolean);
+    if (pathParts[0] !== MINIO_BUCKET || pathParts.length < 2) {
+      return null;
+    }
+
+    return pathParts.slice(1).map(decodeURIComponent).join("/");
+  } catch {
+    return null;
+  }
+}
+
 export async function uploadRoutes(app: FastifyInstance) {
   app.post<{ Params: { itemId: number } }>(
     "/items/:itemId/upload-fallback/presign",
@@ -102,6 +122,41 @@ export async function uploadRoutes(app: FastifyInstance) {
       const publicUrl = `${endpoint}/${MINIO_BUCKET}/${key}`;
 
       return { uploadUrl, publicUrl };
+    }
+  );
+
+  app.delete<{ Params: { itemId: number } }>(
+    "/items/:itemId/fallback-image",
+    async (request, reply) => {
+      if (!requireAdmin(request, reply)) return;
+
+      const params = z
+        .object({ itemId: z.coerce.number().int().positive() })
+        .parse(request.params);
+
+      const item = db
+        .query("SELECT id, fallback_image FROM items WHERE id = ?")
+        .get(params.itemId) as { id: number; fallback_image: string | null } | null;
+
+      if (!item) {
+        return reply.code(404).send({ message: "Item not found" });
+      }
+
+      if (item.fallback_image) {
+        const key = getFallbackImageKey(item.fallback_image);
+        if (key) {
+          await s3.delete(key);
+        }
+      }
+
+      const updated = db.query(`
+        UPDATE items
+        SET fallback_image = NULL, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+        RETURNING *
+      `).get(params.itemId) as Record<string, unknown>;
+
+      return updated;
     }
   );
 }

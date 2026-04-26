@@ -221,6 +221,21 @@ export function useUpdateItemFallbackImage() {
   });
 }
 
+export function useDeleteItemFallbackImage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) =>
+      api<Item>(`/api/items/${id}/fallback-image`, {
+        method: "DELETE",
+        admin: true,
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    },
+  });
+}
+
 export function useDeleteItemLink() {
   const queryClient = useQueryClient();
 

@@ -43,6 +43,7 @@
     "empty_message": "אין פריטים לפילטר זה.",
     "footer_message": "ניהול רשימת הלידה",
     "confirm_delete_item": "למחוק את \"{{name}}\"?",
+    "confirm_delete_fallback_image": "למחוק את התמונה שהועלתה עבור \"{{name}}\"?",
     "confirm_clear_reservation": "לשחרר את ההזמנה של \"{{name}}\"?",
     "error_preview": "לא ניתן לטעון תצוגה מקדימה"
   },
@@ -50,6 +51,7 @@
     "reserved_badge": "הוזמן",
     "open_link_label": "פתח קישור",
     "delete_link_label": "מחק קישור",
+    "delete_fallback_image_label": "מחק תמונה שהועלתה",
     "link_button": "קישור",
     "edit_button": "עריכה",
     "release_button": "שחרור",

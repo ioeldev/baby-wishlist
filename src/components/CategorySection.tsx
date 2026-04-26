@@ -13,6 +13,7 @@ type Props = {
   onEdit?: (item: Item) => void;
   onDelete?: (item: Item) => void;
   onDeleteLink?: (id: number) => void;
+  onDeleteFallbackImage?: (item: Item) => void;
   onClearReservation?: (item: Item) => void;
 };
 

@@ -22,6 +22,7 @@ import {
     useCreateItem,
     useDeleteCategory,
     useDeleteItem,
+    useDeleteItemFallbackImage,
     useDeleteItemLink,
     usePreviewLink,
     useUpdateCategory,
@@ -48,6 +49,7 @@ export function AdminWishlistPage() {
     const previewLink = usePreviewLink();
     const addItemLink = useAddItemLink();
     const updateFallbackImage = useUpdateItemFallbackImage();
+    const deleteFallbackImage = useDeleteItemFallbackImage();
     const deleteItemLink = useDeleteItemLink();
     const clearReservation = useClearReservation();
 
@@ -242,6 +244,11 @@ export function AdminWishlistPage() {
                             }
                         }}
                         onDeleteLink={(id) => deleteItemLink.mutate(id)}
+                        onDeleteFallbackImage={(item) => {
+                            if (confirm(t("adminWishlist.confirm_delete_fallback_image", { name: localName(item) }))) {
+                                deleteFallbackImage.mutate(item.id);
+                            }
+                        }}
                         onClearReservation={(item) => {
                             if (confirm(t("adminWishlist.confirm_clear_reservation", { name: localName(item) }))) {
                                 clearReservation.mutate(item.id);
