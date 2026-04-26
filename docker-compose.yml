@@ -6,6 +6,8 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BROWSER_REDIRECT_URL: https://${MINIO_CONSOLE_HOST}
+      MINIO_SERVER_URL: https://${MINIO_HOST}
     volumes:
       - minio_data:/data
     networks:
@@ -19,33 +21,11 @@ services:
       - traefik.http.routers.babywishlist-minio.tls.certresolver=letsencrypt
       - traefik.http.routers.babywishlist-minio.service=babywishlist-minio
       - traefik.http.services.babywishlist-minio.loadbalancer.server.port=9000
-
-  minio-init:
-    image: minio/mc:latest
-    depends_on:
-      - minio
-    restart: "no"
-    networks:
-      - app_internal
-    environment:
-      APP_ORIGIN: https://${APP_HOST}
-      MINIO_BUCKET: ${MINIO_BUCKET}
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    entrypoint: >
-      /bin/sh -c "
-      until mc alias set local http://minio:9000 \"$${MINIO_ROOT_USER}\" \"$${MINIO_ROOT_PASSWORD}\"; do sleep 2; done;
-      if [ $${#MINIO_ACCESS_KEY} -lt 3 ]; then echo 'MINIO_ACCESS_KEY must be at least 3 characters'; exit 1; fi;
-      if [ $${#MINIO_SECRET_KEY} -lt 8 ]; then echo 'MINIO_SECRET_KEY must be at least 8 characters'; exit 1; fi;
-      mc mb --ignore-existing \"local/$${MINIO_BUCKET}\";
-      mc anonymous set download \"local/$${MINIO_BUCKET}\";
-      mc admin user add local \"$${MINIO_ACCESS_KEY}\" \"$${MINIO_SECRET_KEY}\" || true;
-      mc admin policy attach local readwrite --user \"$${MINIO_ACCESS_KEY}\";
-      printf '<CORSConfiguration><CORSRule><AllowedOrigin>%s</AllowedOrigin><AllowedMethod>GET</AllowedMethod><AllowedMethod>PUT</AllowedMethod><AllowedMethod>HEAD</AllowedMethod><AllowedHeader>*</AllowedHeader><ExposeHeader>ETag</ExposeHeader><MaxAgeSeconds>3000</MaxAgeSeconds></CORSRule></CORSConfiguration>' \"$${APP_ORIGIN}\" > /tmp/cors.xml;
-      mc cors set \"local/$${MINIO_BUCKET}\" /tmp/cors.xml;
-      "
+      - traefik.http.routers.babywishlist-minio-console.rule=Host(`${MINIO_CONSOLE_HOST}`)
+      - traefik.http.routers.babywishlist-minio-console.entrypoints=websecure
+      - traefik.http.routers.babywishlist-minio-console.tls.certresolver=letsencrypt
+      - traefik.http.routers.babywishlist-minio-console.service=babywishlist-minio-console
+      - traefik.http.services.babywishlist-minio-console.loadbalancer.server.port=9001
 
   app:
     build:

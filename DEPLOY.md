@@ -8,6 +8,7 @@ Point both hosts to the VPS public IP:
 
 - `APP_HOST`, for example `wishlist.example.com`
 - `MINIO_HOST`, for example `s3.example.com`
+- `MINIO_CONSOLE_HOST`, for example `minio.example.com`
 
 ## 2. Configure environment
 
@@ -29,10 +30,17 @@ Use strong values for:
 
 ```sh
 docker compose up -d minio
-docker compose run --rm minio-init
 ```
 
-This starts MinIO, creates the bucket, enables public reads for uploaded images, applies CORS, and creates the app MinIO user. HTTPS routing is handled by your existing Traefik container through Docker labels.
+This starts MinIO and exposes both the S3 API and the MinIO console through your existing Traefik container.
+
+Open `https://${MINIO_CONSOLE_HOST}` with `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD`, then configure:
+
+- create the `MINIO_BUCKET` bucket;
+- allow anonymous download/read for uploaded public images;
+- create or confirm the app user matching `MINIO_ACCESS_KEY` and `MINIO_SECRET_KEY`;
+- grant that app user read/write access to the bucket;
+- configure bucket CORS for `https://${APP_HOST}` with `GET`, `PUT`, and `HEAD`.
 
 ## 4. Restore the SQLite database
 
@@ -52,9 +60,8 @@ The app stores production data at `/app/data/wishlist.db`, backed by the `app_da
 
 - Open `https://${APP_HOST}` and confirm the existing wishlist data appears.
 - Open `https://${APP_HOST}/admin` and confirm `ADMIN_TOKEN` works.
+- Open `https://${MINIO_CONSOLE_HOST}` and confirm the MinIO console works.
 - Upload a fallback image from admin and confirm it loads from `https://${MINIO_HOST}/${MINIO_BUCKET}/...`.
-
-The MinIO console is intentionally not exposed through Traefik.
 
 ## GitHub Actions Deployment
 
