@@ -38,6 +38,7 @@ This starts MinIO, creates the bucket, enables public reads for uploaded images,
 Start the app once so Docker creates the `app_data` volume, then stop it before copying the Railway database file:
 
 ```sh
+cd /home/seed/babywishlist
 docker compose up -d app
 docker compose stop app
 docker compose cp ./wishlist.db app:/app/data/wishlist.db
@@ -60,7 +61,15 @@ The workflow in `.github/workflows/deploy.yml` runs CI on GitHub-hosted runners 
 
 Deployments run only after a successful push to `main`, on a self-hosted runner.
 
-Install the runner on the VPS in the same directory as this repository checkout. Add a GitHub Actions secret named `ENV` containing the full production `.env` file content; the deploy workflow writes that secret to `.env` before running Docker Compose.
+Install the runner on the VPS and add a GitHub Actions secret named `ENV` containing the full production `.env` file content.
+
+The deploy workflow copies each checked-out `main` revision into this stable VPS directory before running Docker Compose:
+
+```sh
+/home/seed/babywishlist
+```
+
+It writes the `ENV` secret to `/home/seed/babywishlist/.env`, then runs all `docker compose` commands from `/home/seed/babywishlist`.
 
 Recommended repository settings:
 

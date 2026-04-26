@@ -40,24 +40,36 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: self-hosted
     environment: production
+    env:
+      DEPLOY_PATH: /home/seed/babywishlist
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Sync code to deploy directory
+        run: |
+          mkdir -p "$DEPLOY_PATH"
+          rsync -a --delete --exclude ".git/" "$GITHUB_WORKSPACE"/ "$DEPLOY_PATH"/
+
       - name: Write production environment
-        run: printf '%s\n' "${{ secrets.ENV }}" > .env
+        run: printf '%s\n' "${{ secrets.ENV }}" > "$DEPLOY_PATH/.env"
 
       - name: Verify Docker Compose config
+        working-directory: ${{ env.DEPLOY_PATH }}
         run: docker compose config
 
       - name: Build app image
+        working-directory: ${{ env.DEPLOY_PATH }}
         run: docker compose build app
 
       - name: Start infrastructure
+        working-directory: ${{ env.DEPLOY_PATH }}
         run: docker compose up -d minio minio-init
 
       - name: Deploy app
+        working-directory: ${{ env.DEPLOY_PATH }}
         run: docker compose up -d app
 
       - name: Show service status
+        working-directory: ${{ env.DEPLOY_PATH }}
         run: docker compose ps
