@@ -29,3 +29,5 @@ In development, the admin token defaults to `admin`. In production, set `ADMIN_T
 bun run build
 bun start
 ```
+
+For VPS deployment with Docker, Traefik, MinIO, and the persistent SQLite volume, see [DEPLOY.md](DEPLOY.md).
