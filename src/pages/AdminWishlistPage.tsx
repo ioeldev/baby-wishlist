@@ -1,5 +1,5 @@
 import { FolderCog, Plus } from "lucide-react";
-import { type FormEvent, useMemo, useState } from "react";
+import { type ChangeEvent, type FormEvent, useMemo, useRef, useState } from "react";
 import { AddItemModal } from "../components/AddItemModal";
 import { CategoryManagerModal } from "../components/CategoryManagerModal";
 import { CategorySection } from "../components/CategorySection";
@@ -73,8 +73,11 @@ export function AdminWishlistPage() {
     const [categoryModalOpen, setCategoryModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<Item | null>(null);
     const [linkItem, setLinkItem] = useState<Item | null>(null);
+    const [imageItem, setImageItem] = useState<Item | null>(null);
+    const [uploadingImageItemId, setUploadingImageItemId] = useState<number | null>(null);
     const [preview, setPreview] = useState<LinkPreview | null>(null);
     const [previewError, setPreviewError] = useState<string | null>(null);
+    const imageInputRef = useRef<HTMLInputElement>(null);
 
     const categories = wishlist.data ?? [];
     const selectedCategoryExists =
@@ -126,6 +129,68 @@ export function AdminWishlistPage() {
         }
         setPreview(null);
         setLinkItem(null);
+    }
+
+    function openFallbackImagePicker(item: Item) {
+        setImageItem(item);
+        imageInputRef.current?.click();
+    }
+
+    async function handleFallbackImageFileChange(event: ChangeEvent<HTMLInputElement>) {
+        const file = event.currentTarget.files?.[0];
+        event.currentTarget.value = "";
+        if (!file || !imageItem) return;
+
+        setUploadingImageItemId(imageItem.id);
+
+        try {
+            const presignRes = await fetch(`/api/items/${imageItem.id}/upload-fallback/presign`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-token": localStorage.getItem("adminToken") ?? "",
+                },
+                body: JSON.stringify({
+                    contentType: file.type,
+                    contentLength: file.size,
+                    filename: file.name,
+                }),
+            });
+
+            if (!presignRes.ok) {
+                const body = (await presignRes.json()) as { message?: string };
+                throw new Error(body.message ?? t("adminWishlist.error_upload_fallback_image"));
+            }
+
+            const { uploadUrl, publicUrl } = (await presignRes.json()) as {
+                uploadUrl: string;
+                publicUrl: string;
+            };
+
+            const uploadRes = await fetch(uploadUrl, {
+                method: "PUT",
+                headers: { "Content-Type": file.type },
+                body: file,
+            });
+
+            if (!uploadRes.ok) {
+                throw new Error(t("adminWishlist.error_upload_fallback_image"));
+            }
+
+            if (imageItem.fallback_image) {
+                await deleteFallbackImage.mutateAsync(imageItem.id);
+            }
+
+            await updateFallbackImage.mutateAsync({
+                id: imageItem.id,
+                fallback_image: publicUrl,
+            });
+        } catch (err) {
+            alert(err instanceof Error ? err.message : t("adminWishlist.error_upload_fallback_image"));
+        } finally {
+            setUploadingImageItemId(null);
+            setImageItem(null);
+        }
     }
 
     function handleAdminLogin(event: FormEvent<HTMLFormElement>) {
@@ -184,6 +249,13 @@ export function AdminWishlistPage() {
             />
 
             <main className="relative z-[1] mx-auto max-w-[1140px] px-4 pb-20 sm:px-6">
+                <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={event => void handleFallbackImageFileChange(event)}
+                    className="hidden"
+                />
                 {!adminToken ? (
                     <form
                         onSubmit={handleAdminLogin}
@@ -237,6 +309,8 @@ export function AdminWishlistPage() {
                         category={category}
                         admin
                         onAddLink={setLinkItem}
+                        onAddFallbackImage={openFallbackImagePicker}
+                        uploadingFallbackImageItemId={uploadingImageItemId}
                         onEdit={openEdit}
                         onDelete={(item) => {
                             if (confirm(t("adminWishlist.confirm_delete_item", { name: localName(item) }))) {

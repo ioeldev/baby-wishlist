@@ -45,13 +45,16 @@
     "confirm_delete_item": "Supprimer \"{{name}}\" ?",
     "confirm_delete_fallback_image": "Supprimer l'image importée de \"{{name}}\" ?",
     "confirm_clear_reservation": "Libérer la réservation de \"{{name}}\" ?",
-    "error_preview": "Prévisualisation impossible"
+    "error_preview": "Prévisualisation impossible",
+    "error_upload_fallback_image": "Impossible d'importer l'image"
   },
   "itemCard": {
     "reserved_badge": "Réservé",
     "open_link_label": "Ouvrir le lien",
     "delete_link_label": "Supprimer le lien",
     "delete_fallback_image_label": "Supprimer l'image importée",
+    "image_button": "Image",
+    "image_button_busy": "Import...",
     "link_button": "Lien",
     "edit_button": "Modifier",
     "release_button": "Libérer",

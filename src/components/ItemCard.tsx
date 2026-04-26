@@ -1,4 +1,4 @@
-import { ExternalLink, Gift, LinkIcon, Pencil, RotateCcw, Trash2, X } from "lucide-react";
+import { ExternalLink, Gift, ImagePlus, LinkIcon, Pencil, RotateCcw, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import type { Item } from "../types";
@@ -11,6 +11,8 @@ type Props = {
     admin?: boolean;
     onOffer?: (item: Item) => void;
     onAddLink?: (item: Item) => void;
+    onAddFallbackImage?: (item: Item) => void;
+    uploadingFallbackImageItemId?: number | null;
     onEdit?: (item: Item) => void;
     onDelete?: (item: Item) => void;
     onDeleteLink?: (id: number) => void;
@@ -23,6 +25,8 @@ export function ItemCard({
     admin = false,
     onOffer,
     onAddLink,
+    onAddFallbackImage,
+    uploadingFallbackImageItemId,
     onEdit,
     onDelete,
     onDeleteLink,
@@ -35,13 +39,15 @@ export function ItemCard({
 
     const reserved = item.is_reserved;
 
-    return <AdminItemCard item={item} reserved={reserved} onAddLink={onAddLink} onEdit={onEdit} onDelete={onDelete} onDeleteLink={onDeleteLink} onDeleteFallbackImage={onDeleteFallbackImage} onClearReservation={onClearReservation} />;
+    return <AdminItemCard item={item} reserved={reserved} onAddLink={onAddLink} onAddFallbackImage={onAddFallbackImage} uploadingFallbackImageItemId={uploadingFallbackImageItemId} onEdit={onEdit} onDelete={onDelete} onDeleteLink={onDeleteLink} onDeleteFallbackImage={onDeleteFallbackImage} onClearReservation={onClearReservation} />;
 }
 
-function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLink, onDeleteFallbackImage, onClearReservation }: {
+function AdminItemCard({ item, reserved, onAddLink, onAddFallbackImage, uploadingFallbackImageItemId, onEdit, onDelete, onDeleteLink, onDeleteFallbackImage, onClearReservation }: {
     item: Item;
     reserved: boolean;
     onAddLink?: (item: Item) => void;
+    onAddFallbackImage?: (item: Item) => void;
+    uploadingFallbackImageItemId?: number | null;
     onEdit?: (item: Item) => void;
     onDelete?: (item: Item) => void;
     onDeleteLink?: (id: number) => void;
@@ -150,6 +156,18 @@ function AdminItemCard({ item, reserved, onAddLink, onEdit, onDelete, onDeleteLi
                 ) : null}
 
                 <div className="mt-auto flex flex-col gap-2 pt-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
+                    {onAddFallbackImage ? (
+                        <Button
+                            size="sm"
+                            variant="wishlistSecondary"
+                            onClick={() => onAddFallbackImage(item)}
+                            disabled={uploadingFallbackImageItemId === item.id}
+                            icon={<ImagePlus className="h-4 w-4" />}
+                            className="w-full min-w-0 sm:w-auto"
+                        >
+                            {uploadingFallbackImageItemId === item.id ? t("itemCard.image_button_busy") : t("itemCard.image_button")}
+                        </Button>
+                    ) : null}
                     {onAddLink ? (
                         <Button
                             size="sm"

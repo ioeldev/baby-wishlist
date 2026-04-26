@@ -10,6 +10,8 @@ type Props = {
   admin?: boolean;
   onOffer?: (item: Item) => void;
   onAddLink?: (item: Item) => void;
+  onAddFallbackImage?: (item: Item) => void;
+  uploadingFallbackImageItemId?: number | null;
   onEdit?: (item: Item) => void;
   onDelete?: (item: Item) => void;
   onDeleteLink?: (id: number) => void;
