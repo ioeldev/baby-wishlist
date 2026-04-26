@@ -58,11 +58,7 @@ The MinIO console is intentionally not exposed through Traefik.
 
 The workflow in `.github/workflows/deploy.yml` runs CI on GitHub-hosted runners for pull requests and pushes to `main`.
 
-Deployments run only after a successful push to `main`, on a self-hosted runner with these labels:
-
-- `self-hosted`
-- `babywishlist`
-- `deploy`
+Deployments run only after a successful push to `main`, on a self-hosted runner.
 
 Install the runner on the VPS in the same directory as this repository checkout. Add a GitHub Actions secret named `ENV` containing the full production `.env` file content; the deploy workflow writes that secret to `.env` before running Docker Compose.
 
